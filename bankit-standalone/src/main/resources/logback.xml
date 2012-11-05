@@ -1,0 +1,49 @@
+<!--
+
+    Copyright (C) 2012 Alexandre Thomazo
+
+    This file is part of BankIt.
+
+    BankIt is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    BankIt is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with BankIt. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<configuration>
+
+	<!-- ***** CONSOLE ***** -->
+	<!-- Application Console -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- ***** FILE ***** -->
+	<appender name="file" class="ch.qos.logback.core.FileAppender">
+		<file>bankit.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- *****  LOGGER  ***** -->
+	<!-- Bankit Logger -->
+	<logger name="org.alexlg.bankit" level="DEBUG" />
+	
+	<!-- Root Logger -->
+	<root level="info">
+		<appender-ref ref="file" />
+	</root>
+
+</configuration>

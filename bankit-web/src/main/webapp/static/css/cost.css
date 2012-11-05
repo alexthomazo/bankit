@@ -1,0 +1,38 @@
+/*
+ * Copyright (C) 2012 Alexandre Thomazo
+ *
+ * This file is part of BankIt.
+ *
+ * BankIt is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * BankIt is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
+ */
+/** COST TABLE **/
+.table-cost {
+	font-size: 95%;
+}
+
+/* Day column */
+.table-cost td:nth-child(1) {
+	width: 40px;
+}
+
+/* Amount column */
+.table-cost th:nth-child(4), .table-cost td:nth-child(4) {
+	width: 80px;
+	text-align: right;
+}
+
+/* Operation column */
+.table-cost th:nth-child(5), .table-cost td:nth-child(5) {
+	width: 15px;
+}

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2012 Alexandre Thomazo
+
+    This file is part of BankIt.
+
+    BankIt is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    BankIt is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with BankIt. If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+
+	<changeSet id="1" author="alex">
+		<createTable tableName="operations">
+			<column name="operation_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="value_date" type="date" />
+			<column name="operation_date" type="date">
+				<constraints nullable="false" />
+			</column>
+			<column name="label" type="java.sql.Types.VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="planned" type="decimal(9,2)" />
+			<column name="amount" type="decimal(9,2)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="2" author="alex">
+		<createTable tableName="costs">
+			<column name="cost_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="day" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="label" type="java.sql.Types.VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="amount" type="decimal(9,2)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="3" author="alex">
+		<createTable tableName="options">
+			<column name="option_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="name" type="java.sql.Types.VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="string_val" type="java.sql.Types.VARCHAR(255)"/>
+			<column name="date_val" type="date"/>
+			<column name="int_val" type="int"/>
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>

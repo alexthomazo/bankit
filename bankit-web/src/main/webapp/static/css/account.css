@@ -1,0 +1,100 @@
+/*
+ * Copyright (C) 2012 Alexandre Thomazo
+ *
+ * This file is part of BankIt.
+ *
+ * BankIt is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * BankIt is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
+ */
+/** ACCOUNT TABLE **/
+.table-account {
+	font-size: 95%;
+}
+
+.table-account td {
+	vertical-align: bottom;
+}
+
+/* Date column */
+.table-account td:nth-child(1) {
+	width: 95px;
+}
+
+/* Label column */
+.table-account td:nth-child(2) {
+	font-size: 90%;
+}
+
+/* Planned column */
+.table-account th:nth-child(3), .table-account td:nth-child(3) {
+	width: 80px;
+	text-align: right;
+}
+
+/* Amount column */
+.table-account th:nth-child(4), .table-account td:nth-child(4) {
+	width: 80px;
+	text-align: right;
+}
+
+/* "Cumul" column */
+.table-account th:nth-child(5), .table-account td:nth-child(5) {
+	width: 85px;
+	text-align: right;
+}
+
+/* Operation column */
+.table-account th:nth-child(6), .table-account td:nth-child(6) {
+	width: 15px;
+}
+
+
+/* balance line */
+.table-account .balance td {
+	font-weight: bold;
+}
+
+/* future tbody */
+.table-account .future td {
+	font-style: italic;
+}
+
+/* waiting tbody */
+.table-account .waiting td {
+	font-style: italic;
+}
+
+.table-account .waiting td:nth-child(1) {
+	color: #999999;
+}
+
+/* Income */
+td.income { color: #008800; }
+
+/* Red total */
+td.red {
+	color: #ff0000;
+	font-weight: bold;
+}
+
+/* Amount with planned value */
+span.planned {
+	border-bottom: 1px dotted #999999;
+}
+span.plus { border-bottom-color: #008800; }
+span.minus { border-bottom-color: #FF0000; }
+
+/** SUMMARY TABLE **/
+.table-summary {
+	font-size: 90%;
+}

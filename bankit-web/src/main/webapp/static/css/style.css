@@ -1,0 +1,88 @@
+/*
+ * Copyright (C) 2012 Alexandre Thomazo
+ *
+ * This file is part of BankIt.
+ *
+ * BankIt is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * BankIt is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
+ */
+/* ******************************** */
+/*             GENERAL              */
+/* ******************************** */
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.sidebar-nav {
+	padding: 9px 0;
+}
+
+.brand small {
+	font-size: 50%;
+	line-height: 50%;
+}
+
+/* ******************************** */
+/*             MESSAGES             */
+/* ******************************** */
+
+#message div {
+	position: fixed;
+	right:5%;
+	top: 90px;
+	min-width: 100px;
+	z-index: 5000;
+	opacity: 0.85;
+	margin: 0px auto;
+	height: 25px;
+	min-height: 25px;
+	padding: 10px 10px 0px 40px;
+}
+
+#message div.loading {
+	background: url(../img/loading.gif) 2px 1px no-repeat;
+	background-color: #EBEBEB;
+	border: 1px solid #CCCCCC;
+}
+
+#message div.loading img {
+	width: 0%;
+	height: 4px;
+	margin-top: 2px;
+	visibility: hidden;
+}
+
+#message div.error {
+	background: url(../img/warning.png) 2px 1px no-repeat;
+	background-color: #EF9398;
+	border: 1px solid #DC5757;
+	opacity: 0.95;
+}
+
+#message div.info {
+	background: url(../img/info.png) 2px 1px no-repeat;
+	background-color: #F7FDCB;
+	border: 1px solid #C2D071;
+}
+
+#message div.confirm {
+	background: url(../img/confirm.png) 2px 1px no-repeat;
+	background-color: #A6EF7B;
+	border: 1px solid #76C83F;
+}
+
+/** ALERTS **/
+.alert {
+	text-align:center;
+}
