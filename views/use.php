@@ -13,10 +13,10 @@ if (isset($_GET['s'])) {
 	<div class="span2 well" style="padding: 8px 0;">
 		<ul class="nav nav-list">
 			<li class="nav-header">Utilisation</li>
-			<li <?php if ($subpage=="first") echo 'class="active"' ?>><a href="?p=use&s=first">Premier lancement</a></li>
-			<li <?php if ($subpage=="costs") echo 'class="active"' ?>><a href="?p=use&s=costs">Charges/Revenus</a></li>
-			<li <?php if ($subpage=="operations") echo 'class="active"' ?>><a href="?p=use&s=operations">Operations</a></li>
-			<li <?php if ($subpage=="sync") echo 'class="active"' ?>><a ?p=use&s=sync">Synchronisation</a></li>
+			<li <?php if ($subpage=="first") echo 'class="active"' ?>><a href="?p=use.htm&s=first.htm">Premier lancement</a></li>
+			<li <?php if ($subpage=="costs") echo 'class="active"' ?>><a href="?p=use.htm&s=costs.htm">Charges/Revenus</a></li>
+			<li <?php if ($subpage=="operations") echo 'class="active"' ?>><a href="?p=use.htm&s=operations.htm">Operations</a></li>
+			<li <?php if ($subpage=="sync") echo 'class="active"' ?>><a href="?p=use.htm&s=sync.htm">Synchronisation</a></li>
 		</ul>
 	</div>
 	
