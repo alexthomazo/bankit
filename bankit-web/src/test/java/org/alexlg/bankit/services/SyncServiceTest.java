@@ -175,6 +175,14 @@ public class SyncServiceTest extends AbstractDaoTest {
 		assertEquals("op amount", new BigDecimal("-65.20"), op.getAmount());
 		assertEquals("op date", "2012-10-06", sdf.format(op.getOperationDate()));
 		
+		//label with M
+		op = operationDao.get(opList.get(2));
+		assertEquals("op label M", "CARTE 12/08 RATP PARIS CED", op.getLabel());
+		
+		//label with P and M, we take the longest
+		op = operationDao.get(opList.get(4));
+		assertEquals("op label P&M", "Virement de John Doe", op.getLabel());
+		
 		//check if sync date correctly updated
 		Date startSync = optionsService.getDate(SyncService.OP_SYNC_OPT);
 		assertEquals("op date", "2012-10-23", sdf.format(startSync));

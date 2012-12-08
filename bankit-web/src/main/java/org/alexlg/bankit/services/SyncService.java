@@ -221,9 +221,10 @@ public class SyncService {
 				}
 				
 			} else if (firstChar.equals("P") || firstChar.equals("M")) {
-				if (curOp.getLabel() == null && line.trim().length() > 0) {
+				String label = line.replaceAll("( )+", " ").trim();
+				if (curOp.getLabel() == null || label.length() > curOp.getLabel().length()) {
 					//remove all double space
-					curOp.setLabel(line.replaceAll("( )+", " ").trim());
+					curOp.setLabel(label);
 				}
 				
 			} else if (firstChar.equals("^")) {
