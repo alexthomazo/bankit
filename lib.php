@@ -43,7 +43,7 @@ function get_download_file($channel = 'stable') {
 		closedir($handle);
 	}
 	
-	return $file;
+	return $channel .'/' . $file;
 }
 
 /**
