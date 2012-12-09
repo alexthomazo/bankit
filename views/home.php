@@ -1,9 +1,15 @@
+<?php
+$channel = 'stable'; 
+if (isset($_GET['channel']) && is_channel_valid($_GET['channel'])) {
+	$channel = $_GET['channel'];
+}
+?>
 <div class="hero-unit" style="text-align: center;">
 	<h1>BankIt</h1>
 	<p>Un logiciel simple de prévision de vos dépenses</p>
 	<p>
-		<a href="download/<?php echo get_download_file(); ?>" class="btn btn-primary btn-large">Télécharger</a><br>
-		<small style="color: #bbbbbb"><?php echo get_git_property("git.commit.id.describe"); ?></small>	
+		<a href="download/<?php echo get_download_file($channel); ?>" class="btn btn-primary btn-large">Télécharger</a><br>
+		<small style="color: #bbbbbb"><?php echo get_git_property("git.commit.id.describe", $channel); ?></small>
 	</p>
 </div>
 
