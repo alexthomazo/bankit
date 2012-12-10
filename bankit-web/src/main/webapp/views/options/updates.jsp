@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<%--
 
     Copyright (C) 2012 Alexandre Thomazo
 
@@ -18,16 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with BankIt. If not, see <http://www.gnu.org/licenses/>.
 
--->
-<decorators defaultdir="/decorators">
-	<decorator name="options" page="options.jsp">
-		<pattern>/options/*</pattern>
-	</decorator>
+--%>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+	<head>
+		<title>Mises à jour</title>
+	</head>
 	
-	<decorator name="main" page="main.jsp">
-		<pattern>/*</pattern>
-	</decorator>
-	
-	<decorator name="empty" page="empty.jsp" />
-
-</decorators>
+	<body>
+		MAJ
+	</body>
+</html>

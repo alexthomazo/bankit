@@ -57,6 +57,8 @@
 						<li><a href="<c:url value='/account/'/>">Compte</a></li>
 						<li class="divider-vertical"></li>
 						<li><a href="<c:url value='/cost/'/>">Charges</a></li>
+						<li class="divider-vertical"></li>
+						<li><a href="<c:url value='/options/'/>">Options</a></li>
 					</ul>
 					
 					<c:if test="${standalone}">
