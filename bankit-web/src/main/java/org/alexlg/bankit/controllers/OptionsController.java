@@ -18,6 +18,8 @@
  */
 package org.alexlg.bankit.controllers;
 
+import org.alexlg.bankit.services.OptionsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/options")
 public class OptionsController {
 
+	@Autowired
+	private OptionsService optionsService;
+	
 	@RequestMapping("/")
 	public String index() {
 		return "redirect:/options/updates";
@@ -44,7 +49,15 @@ public class OptionsController {
 	 */
 	@RequestMapping(value="/updates", method=RequestMethod.GET)
 	public String showUpdatesOption(ModelMap map) {
+		Integer checkUpdates = optionsService.getInteger("checkUpdates");
+		if (checkUpdates == null) checkUpdates = 1;
+		
+		String updateChannel = optionsService.getString("updateChannel");
+		if (updateChannel == null) updateChannel = "stable";
+
 		map.addAttribute("page", "updates");
+		map.addAttribute("checkUpdates", checkUpdates);
+		map.addAttribute("updateChannel", updateChannel);
 		return "options/updates";
 	}
 }

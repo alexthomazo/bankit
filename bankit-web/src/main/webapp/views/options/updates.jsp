@@ -23,9 +23,48 @@
 <html>
 	<head>
 		<title>Mises à jour</title>
+		<style type="text/css">
+			.form-horizontal .control-label { width: 160px; }
+			.form-horizontal .controls { margin-left: 180px; }
+		</style>
 	</head>
 	
 	<body>
-		MAJ
+		<h4>Mises à jour</h4>
+		<form class="form-horizontal">
+		
+			<%-- Check updates --%>
+			<div class="control-group">
+				<label class="control-label">Vérifier les mises à jour :</label>
+				<div class="controls">
+					<label class="radio inline">
+						<input type="radio" name="checkUpdates" value="1" <c:if test='${checkUpdates == 1}'>checked</c:if>> Oui
+					</label>
+					<label class="radio inline">
+						<input type="radio" name="checkUpdates" value="0" <c:if test='${checkUpdates == 0}'>checked</c:if>> Non
+					</label>
+				</div>
+			</div>
+			
+			<%-- Channel --%>
+			<div class="control-group">
+				<label class="control-label">Version :</label>
+				<div class="controls">
+					<label class="radio">
+						<input type="radio" name="updateChannel" value="stable" <c:if test='${updateChannel == "stable"}'>checked</c:if>> Stable
+					</label>
+					<label class="radio">
+						<input type="radio" name="updateChannel" value="dev" <c:if test='${updateChannel == "dev"}'>checked</c:if>> Développement
+					</label>
+				</div>
+			</div>
+			
+			<%-- Save button --%>
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn btn-primary">Enregistrer</button>
+				</div>
+			</div>
+		</form>
 	</body>
 </html>
