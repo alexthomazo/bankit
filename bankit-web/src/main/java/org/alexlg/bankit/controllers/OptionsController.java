@@ -24,6 +24,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller which handles all operations for
@@ -59,5 +61,25 @@ public class OptionsController {
 		map.addAttribute("checkUpdates", checkUpdates);
 		map.addAttribute("updateChannel", updateChannel);
 		return "options/updates";
+	}
+	
+	/**
+	 * Save options for updates
+	 * @param checkUpdates Do we check for updates (0/1) ?
+	 * @param updateChannel Channel to check for updates ?
+	 * @return redirect to display form
+	 */
+	@RequestMapping(value="/updates", method=RequestMethod.POST)
+	public String saveUpdatesOption(@RequestParam String checkUpdates, @RequestParam String updateChannel,
+			RedirectAttributes redirectAttributes) {
+		if ("1".equals(checkUpdates)) {
+			optionsService.set("checkUpdates", 1);
+		} else {
+			optionsService.set("checkUpdates", 0);
+		}
+		optionsService.set("updateChannel", updateChannel);
+		
+		redirectAttributes.addFlashAttribute("saved", "ok");
+		return "redirect:/options/updates";
 	}
 }

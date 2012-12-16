@@ -31,7 +31,7 @@
 	
 	<body>
 		<h4>Mises à jour</h4>
-		<form class="form-horizontal">
+		<form class="form-horizontal" method="post">
 		
 			<%-- Check updates --%>
 			<div class="control-group">
