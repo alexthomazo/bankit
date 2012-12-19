@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.alexlg.bankit.db.Operation;
+import org.alexlg.bankit.services.OptionsService;
 import org.alexlg.bankit.services.SyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,12 @@ public class ApiController {
 
 	@Autowired
 	private SyncService syncService;
+	
+	@Autowired
+	private GitProperties gitProperties;
+	
+	@Autowired
+	private OptionsService optionsService;
 	
 	/**
 	 * Sync a list of operation from the the bank with the account.
@@ -69,6 +76,22 @@ public class ApiController {
 		
 		Map<String, String> res = new HashMap<String, String>(1);
 		res.put("nbOp", Integer.toString(nbOp));
+		return res;
+	}
+	
+	@RequestMapping(value="/update", method=RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public Map<String, String> update() {
+		Integer checkUpdates = optionsService.getInteger("checkUpdates");
+		if (checkUpdates == null) checkUpdates = 1;
+		String updateChannel = optionsService.getString("updateChannel");
+		if (updateChannel == null) updateChannel = "stable";
+		
+		Map<String, String> res = new HashMap<String, String>();
+		res.put("commitId", gitProperties.getCommitId());
+		res.put("checkUpdates", checkUpdates.toString());
+		res.put("updateChannel", updateChannel);
+		
 		return res;
 	}
 
