@@ -41,6 +41,9 @@
 		<script src="<c:url value='/static/js/mootools-more.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/util.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/update.js'/>" type="text/javascript"></script>
+		<c:if test="${standalone}">
+		<script src="<c:url value='/static/js/shutdown.js'/>" type="text/javascript"></script>
+		</c:if>
 		<decorator:head />
 	</head>
 	<body>

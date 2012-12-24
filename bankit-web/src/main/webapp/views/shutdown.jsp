@@ -24,7 +24,15 @@
 <html>
 	<head>
 		<title>Arrêt</title>
-		<script src="<c:url value='/static/js/shutdown.js'/>" type="text/javascript"></script>
+		<script type="text/javascript">
+			//hiding navbar to avoid click on links
+			window.addEvent('domready', function() {
+				$$('.navbar').setStyle('display', 'none');
+			});
+			window.addEvent('load', function() {
+				shutdown();
+			});
+		</script>
 	</head>
 
 	<body>

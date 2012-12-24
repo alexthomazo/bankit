@@ -34,47 +34,88 @@ import org.eclipse.jetty.server.Server;
  * @author Alexandre Thomazo
  */
 public class ShutdownServlet extends HttpServlet {
-    private static final long serialVersionUID = -3857047472685595016L;
+	private static final long serialVersionUID = -3857047472685595016L;
 
-    /** Jetty server */
-    private Server jettyServer;
+	/** Number of seconds before shutdown the application if ping is not received */
+	public static final int SHUTDOWN_TIMEOUT = 30;
 
-    public ShutdownServlet(Server jettyServer) {
-        super();
-        this.jettyServer = jettyServer;
-    }
+	/** Jetty server */
+	private Server jettyServer;
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+	/** Thread waiting for the ping */
+	private Thread keepAlive;
 
-        resp.setContentType("text/plain");
+	/** if the countdown reach zero and keepAlive thread is running, the application stops */
+	private int countdown;
 
-        String uri = req.getRequestURI();
-        //remove any trailing slash
-        if (uri.endsWith("/")) uri = uri.substring(0, uri.length()-1);
-        System.out.println(uri);
+	public ShutdownServlet(Server jettyServer) {
+		super();
+		this.jettyServer = jettyServer;
+	}
 
-        if (uri.equals("/shutdown")) {
-            shutdown(resp);
-        }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 
-    }
+		resp.setContentType("text/plain");
 
-    private void shutdown(HttpServletResponse resp) throws IOException {
-        new Thread() {
-            public void run() {
-                try {
-                    // shutdown the server
-                    jettyServer.stop();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+		String uri = req.getRequestURI();
+		//remove any trailing slash
+		if (uri.endsWith("/")) uri = uri.substring(0, uri.length() - 1);
 
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().println("done");
-    }
+		if (uri.equals("/shutdown")) {
+			shutdown();
+		} else if (uri.equals("/shutdown/ping")) {
+			ping();
+		}
 
+		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.getWriter().println("done");
+	}
+
+	/**
+	 * Shutdown the jetty server
+	 */
+	private void shutdown() {
+		new Thread() {
+			public void run() {
+				try {
+					// shutdown the server
+					countdown = -1;
+					jettyServer.stop();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+
+	/**
+	 * Handle a ping request either by starting the countdown
+	 * or by reset it to SHUTDOWN_TIMEOUT
+	 */
+	private void ping() {
+		if (keepAlive == null) {
+			keepAlive = new Thread() {
+				@Override
+				public void run() {
+					while (countdown >= 0) {
+						if (countdown == 0) {
+							shutdown();
+						}
+						countdown--;
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							//if we can't sleep, let's shutdown
+							shutdown();
+						}
+					}
+				}
+			};
+			keepAlive.start();
+		}
+
+		countdown = SHUTDOWN_TIMEOUT;
+	}
 }

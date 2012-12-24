@@ -20,6 +20,13 @@
  * Script used to shutdown the embedded Jetty when standalone application is running
  */
 window.addEvent('load', function() {
+	ping();
+});
+
+/**
+ * Shutdown the embedded Jetty
+ */
+function shutdown() {
 	new Request({
 		url: '/shutdown/',
 		
@@ -28,9 +35,17 @@ window.addEvent('load', function() {
 			document.id('loading-stop').setStyle('display', 'none');
 		}
 	}).get();
-});
+}
 
-//hiding navbar to avoid click on links
-window.addEvent('domready', function() {
-	$$('.navbar').setStyle('display', 'none');
-});
+/**
+ * Ping the Jetty server to signal our presence
+ */
+function ping() {
+	new Request({
+		url: '/shutdown/ping',
+
+		onComplete: function() {
+			window.setTimeout(ping, 10000);
+		}
+	}).get();
+}
