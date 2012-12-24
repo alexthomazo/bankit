@@ -34,35 +34,47 @@ import org.eclipse.jetty.server.Server;
  * @author Alexandre Thomazo
  */
 public class ShutdownServlet extends HttpServlet {
-	private static final long serialVersionUID = -3857047472685595016L;
+    private static final long serialVersionUID = -3857047472685595016L;
 
-	/** Jetty server */
-	private Server jettyServer;
-		
-	public ShutdownServlet(Server jettyServer) {
-		super();
-		this.jettyServer = jettyServer;
-	}
+    /** Jetty server */
+    private Server jettyServer;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+    public ShutdownServlet(Server jettyServer) {
+        super();
+        this.jettyServer = jettyServer;
+    }
 
-		resp.setContentType("text/plain");
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-		new Thread() {
-			public void run() {
-				try {
-					// shutdown the server
-					jettyServer.stop();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
-			
-		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.getWriter().println("done");
-	}
+        resp.setContentType("text/plain");
+
+        String uri = req.getRequestURI();
+        //remove any trailing slash
+        if (uri.endsWith("/")) uri = uri.substring(0, uri.length()-1);
+        System.out.println(uri);
+
+        if (uri.equals("/shutdown")) {
+            shutdown(resp);
+        }
+
+    }
+
+    private void shutdown(HttpServletResponse resp) throws IOException {
+        new Thread() {
+            public void run() {
+                try {
+                    // shutdown the server
+                    jettyServer.stop();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.getWriter().println("done");
+    }
 
 }
