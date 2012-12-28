@@ -24,6 +24,7 @@ var Updater = new Class({
 		this.cookie = "up";
 		this.localCommitId = "";
 		this.remoteCommitId = "";
+		this.channel = "";
 	},
 	
 	update: function() {
@@ -37,16 +38,16 @@ var Updater = new Class({
 	 */
 	getLocal: function() {
 		new Request.JSON({
-			url: $ctx_path + 'version',
-			onSuccess: function(version) {
-				this.localCommitId = version.commitId;
-				
-				if (this.localCommitId.substr(0, 7) != "1234567") {
+			url: $ctx_path + 'api/update',
+			onSuccess: function(up) {
+				this.localCommitId = up.commitId;
+				this.channel = up.updateChannel;
+
+				if (up.checkUpdates == "1") {
 					this.getRemote();
 				} else {
-					//disabling check in dev
-					this.remoteCommitId = version.commitId;
-					this.display();
+					//put the cookie to avoid recheck on each page
+					this.writeCookie();
 				}
 			}.bind(this)
 		}).get();
@@ -57,7 +58,7 @@ var Updater = new Class({
 	 */
 	getRemote: function() {
 		new Request.JSONP({
-			url: 'http://bankit.thomazo.info/update.php',
+			url: 'http://bankit.thomazo.info/update.php?channel=' + this.channel,
 			onSuccess: function(res) {
 				this.remoteCommitId = res.commit;
 				this.display();
@@ -71,7 +72,7 @@ var Updater = new Class({
 	 */
 	display: function() {
 		//put the cookie for 1 day to remind the notice has been displayed
-		Cookie.write(this.cookie, 1, {duration: 1});
+		this.writeCookie();
 		
 		if (this.localCommitId != this.remoteCommitId) {
 			//new version, display the notice to the user
@@ -84,13 +85,20 @@ var Updater = new Class({
 							'data-dismiss': 'alert'
 						}).appendText('×')
 					).appendText('Une nouvelle version de BankIt est disponible sur ').grab(
-						new Element('a', {'href':'http://bankit.thomazo.info','target':'blank'})
+						new Element('a', {'href':'http://bankit.thomazo.info/?channel=' + this.channel,'target':'blank'})
 						.appendText('bankit.thomazo.info')
 					)
 				)
 				
 			,'top');
 		}
+	},
+
+	/**
+	 * Write the cookie to avoid check version during 24h
+	 */
+	writeCookie: function() {
+		Cookie.write(this.cookie, 1, {duration: 1});
 	}
 });
 
