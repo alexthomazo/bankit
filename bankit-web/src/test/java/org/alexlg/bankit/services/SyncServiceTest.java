@@ -181,7 +181,7 @@ public class SyncServiceTest extends AbstractDaoTest {
 		
 		//label with P and M, we take the longest
 		op = operationDao.get(opList.get(4));
-		assertEquals("op label P&M", "Virement de John Doe", op.getLabel());
+		assertEquals("op label P&M", "Virement de John Doe avec un label depassant completement les 100 caracteres de la colonne afin de v", op.getLabel());
 		
 		//check if sync date correctly updated
 		Date startSync = optionsService.getDate(SyncService.OP_SYNC_OPT);

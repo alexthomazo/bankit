@@ -221,9 +221,12 @@ public class SyncService {
 				}
 				
 			} else if (firstChar.equals("P") || firstChar.equals("M")) {
+				//remove all double space
 				String label = line.replaceAll("( )+", " ").trim();
+				//truncate label if needed
+				if (label.length() > 100) label = label.substring(0, 100);
+
 				if (curOp.getLabel() == null || label.length() > curOp.getLabel().length()) {
-					//remove all double space
 					curOp.setLabel(label);
 				}
 				

@@ -22,5 +22,5 @@ PPRLV Free Mobile 591778
 D23/10/12
 T30.00
 PVIR DOE JOHN
-MVirement de John Doe
+MVirement de John Doe avec un label depassant completement les 100 caracteres de la colonne afin de verifier le bon truncate
 ^
