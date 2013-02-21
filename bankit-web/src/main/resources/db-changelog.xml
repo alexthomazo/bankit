@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2012 Alexandre Thomazo
+    Copyright (C) 2012-2013 Alexandre Thomazo
 
     This file is part of BankIt.
 
@@ -71,6 +71,28 @@
 			<column name="date_val" type="date"/>
 			<column name="int_val" type="int"/>
 		</createTable>
+	</changeSet>
+
+	<changeSet id="4" author="alex">
+		<comment>Adding categories management</comment>
+
+		<createTable tableName="categories">
+			<column name="category_id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="name" type="java.sql.Types.VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addColumn tableName="operations">
+			<column name="category_id" type="int" />
+		</addColumn>
+		
+		<addForeignKeyConstraint constraintName="fk_operations_category_id"
+								 baseTableName="operations" baseColumnNames="category_id"
+								 referencedTableName="categories"
+								 referencedColumnNames="category_id"/>
 	</changeSet>
 
 </databaseChangeLog>

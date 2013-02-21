@@ -21,13 +21,7 @@ package org.alexlg.bankit.db;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 
@@ -51,7 +45,11 @@ public class Operation implements Comparable<Operation> {
 	private String label;
 	private BigDecimal planned;
 	private BigDecimal amount;
-	
+
+	//-- FOREIGN KEYS
+	/** Category attached to this operation */
+	private Category category;
+
 	//-- TRANSIENT / NOT PERSISTENT
 	/** Is this operation is a future planned added automatically */
 	private boolean auto;
@@ -91,7 +89,12 @@ public class Operation implements Comparable<Operation> {
 	public BigDecimal getAmount() {
 		return amount;
 	}
-	
+
+	@ManyToOne
+	public Category getCategory() {
+		return category;
+	}
+
 	@Transient
 	public boolean isAuto() {
 		return auto;
@@ -124,6 +127,9 @@ public class Operation implements Comparable<Operation> {
 	}
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	public void setAuto(boolean auto) {
 		this.auto = auto;
