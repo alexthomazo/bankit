@@ -26,11 +26,7 @@
 	<head>
 		<title>Liste des opérations</title>
 		<link href="<c:url value='/static/css/account.css'/>" type="text/css" rel="stylesheet" />
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('*[title]').tooltip({placement: 'bottom'});
-			});
-		</script>
+		<script src="<c:url value='/static/js/operation-list.js'/>" type="text/javascript"></script>
 	</head>
 
 	<body>
@@ -76,7 +72,7 @@
 						<tr>
 							<th>Date</th>
 							<th>Libellé</th>
-							<th><%-- Keeped for future "Categorie" column --%></th>
+							<th>Catégorie</th>
 							<th>Montant</th>
 							<th>Cumul</th>
 							<th></th>
@@ -103,7 +99,17 @@
 							<td>${op.label}</td>
 							
 							<%-- Category column --%>
-							<td><%-- Keeped for future "Categorie" column --%></td>
+							<td>
+								<select id="cat_${op.operationId}" class="cat_select">
+									<option value="-1"></option>
+									<c:forEach var="cat" items="${categories}">
+									<option
+										value="${cat.categoryId}"
+										<c:if test="${op.category.categoryId == cat.categoryId}">selected</c:if>
+										>${cat.name}</option>
+									</c:forEach>
+								</select>
+							</td>
 							
 							<%-- Amount column --%>
 							<td <c:if test="${op.amount > 0}">class="income"</c:if>>
@@ -149,7 +155,19 @@
 						<tr>
 							<td><fmt:formatDate pattern="dd/MM/yyyy" value="${op.operationDate}" /></td>
 							<td>${op.label}</td>
-							<td></td>
+							
+							<td>
+								<select id="cat_${op.operationId}" class="cat_select">
+									<option value="-1"></option>
+									<c:forEach var="cat" items="${categories}">
+									<option
+										value="${cat.categoryId}"
+										<c:if test="${op.category.categoryId == cat.categoryId}">selected</c:if>
+										>${cat.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+							
 							<td <c:if test="${op.planned > 0}">class="income"</c:if>>${op.planned}</td>
 							<td <c:if test="${op.total < 0}">class="red"</c:if>>${op.total}</td>
 							<td><a href="<c:url value='/account/del/${op.operationId}'/>" title="Supprimer l'opération planifiée"><i class="icon-trash"></i></a></td>
@@ -174,7 +192,21 @@
 						<tr>
 							<td><fmt:formatDate pattern="dd/MM/yyyy" value="${op.operationDate}" /></td>
 							<td>${op.label}</td>
-							<td></td>
+							
+							<td>
+							<c:if test="${not op.auto}">
+								<select id="cat_${op.operationId}" class="cat_select">
+									<option value="-1"></option>
+									<c:forEach var="cat" items="${categories}">
+									<option
+										value="${cat.categoryId}"
+										<c:if test="${op.category.categoryId == cat.categoryId}">selected</c:if>
+										>${cat.name}</option>
+									</c:forEach>
+								</select>
+							</c:if>
+							</td>
+							
 							<td <c:if test="${op.planned > 0}">class="income"</c:if>>${op.planned}</td>
 							<td <c:if test="${op.total < 0}">class="red"</c:if>>${op.total}</td>
 							<td>

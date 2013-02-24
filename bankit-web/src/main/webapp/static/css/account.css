@@ -21,8 +21,12 @@
 	font-size: 95%;
 }
 
+.table-account tr {
+	height: 37px;
+}
+
 .table-account td {
-	vertical-align: bottom;
+	vertical-align: middle;
 }
 
 /* Date column */
@@ -35,10 +39,16 @@
 	font-size: 90%;
 }
 
-/* Planned column */
+/* Category column */
 .table-account th:nth-child(3), .table-account td:nth-child(3) {
-	width: 80px;
-	text-align: right;
+	max-width: 100px;
+}
+
+.cat_select {
+	width: auto;
+	height: auto;
+	line-height: normal;
+	margin: 0;
 }
 
 /* Amount column */

@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -205,6 +207,7 @@ public class AccountController {
 		model.put("currentWaiting", current.add(plannedWaiting));
 		model.put("futureOps", futureOps);
 		model.put("lastSyncDate", optionsService.getDate(SyncService.OP_SYNC_OPT));
+		model.put("categories", categoryDao.getList());
 		//get categories summary (for previous and current month)
 		model.put("categoriesSummary", buildCategories(day, 1));
 		
@@ -308,7 +311,7 @@ public class AccountController {
 	}
 	
 	/**
-	 * Init account by adding initial amount operation
+	 * Init accout by adding initial amount operation
 	 * @param model Model to fill with current operation object
 	 * @return View
 	 */
@@ -346,6 +349,36 @@ public class AccountController {
 			optionsService.set(SyncService.OP_SYNC_OPT, op.getOperationDate());
 			return "redirect:/account/list";
 		}
+	}
+	
+	
+	/**
+	 * Update the category of an operation
+	 * @param opId Operation id to update
+	 * @param catId Category to set
+	 * @return Update operation result
+	 */
+	@RequestMapping(value="/update_cat.json", method=RequestMethod.POST, produces={"application/json"})
+	@Transactional
+	@ResponseBody
+	public Map<String, Boolean> saveCategory(@RequestParam("op") int opId,
+			@RequestParam("cat") int catId) throws Exception {
+		
+		Operation op = operationDao.get(opId);
+		if (op == null) throw new Exception("Operation [" + opId + "] inexistante.");
+		
+		Category cat = null;
+		if (catId != -1) {
+			cat = categoryDao.get(catId);
+			if (cat == null) throw new Exception("Catégory [" + catId + "] inexistante.");
+		}
+		
+		op.setCategory(cat);
+		operationDao.save(op);
+		
+		Map<String, Boolean> res = new HashMap<String, Boolean>(1);
+		res.put("isOk", true);
+		return res;
 	}
 	
 	/**

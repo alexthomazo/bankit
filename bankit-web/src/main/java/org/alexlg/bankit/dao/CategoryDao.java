@@ -115,5 +115,20 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 				
 		return resMap;
 	}
+
+	@Override
+	public List<Category> getList() {
+		CriteriaBuilder b = getBuilder();
+		
+		//creating criteria
+		CriteriaQuery<Category> q = b.createQuery(Category.class);
+		Root<Category> category = q.from(Category.class);
+		q.select(category);
+		
+		//ordering
+		q.orderBy(b.asc(category.get(Category_.name)));
+		
+		return getEm().createQuery(q).getResultList();
+	}
 	
 }
