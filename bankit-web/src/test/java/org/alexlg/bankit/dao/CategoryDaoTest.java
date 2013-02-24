@@ -55,7 +55,7 @@ public class CategoryDaoTest extends AbstractDaoTest {
 				assertEquals("Alimentation amount", new BigDecimal("-140.39"), entry.getValue());
 
 			} else if (category.getName().equals("Communications")) {
-				assertEquals("Communication amount", new BigDecimal("-29.99"), entry.getValue());
+				assertEquals("Communication amount", new BigDecimal("-49.98"), entry.getValue());
 			}
 		}
 	}

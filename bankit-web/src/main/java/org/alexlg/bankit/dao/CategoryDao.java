@@ -54,6 +54,7 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 	public Map<Category, BigDecimal> getMonthSummary(YearMonth yearMonth) {
 		CriteriaBuilder b = getBuilder();
 		
+		//SELECT PASSED OPERATION
 		//create criteria and join
 		CriteriaQuery<Tuple> q = b.createTupleQuery();
 		Root<Operation> operation = q.from(Operation.class);
@@ -83,6 +84,36 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 			}
 		}
 		
+		//SELECT PLANNED OPERATION
+		//select
+		sum = b.sum(operation.get(Operation_.planned));
+		q.select(b.tuple(category, sum));
+		
+		//where (passed amount must be null because already summed previously)
+		q.where(b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()),
+				b.isNull(operation.get(Operation_.amount)));
+		
+		//execute query
+		results = getEm().createQuery(q).getResultList();
+		
+		
+		//put in map
+		for (Tuple res : results) {
+			BigDecimal sumVal = res.get(sum);
+			Category cat = res.get(category);
+			
+			if (!sumVal.equals(BigDecimal.ZERO)) {
+				BigDecimal amount = resMap.get(cat);
+				if (amount != null) {
+					amount = amount.add(sumVal);
+				} else {
+					amount = sumVal;
+				}
+				resMap.put(cat, amount);
+			}
+		}
+				
 		return resMap;
 	}
+	
 }
