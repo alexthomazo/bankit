@@ -1,7 +1,8 @@
 INSERT INTO `categories` (`category_id`, `name`) VALUES
 (1, 'Alimentation'),
 (2, 'Carburant'),
-(3, 'Communications');
+(3, 'Communications'),
+(4, 'Divers');
 
 INSERT INTO `operations` (`operation_id`, `value_date`, `operation_date`, `label`, `planned`, `amount`, `category_id`) VALUES
 (16,'2012-05-12', '2012-05-12', 'Init account', NULL, 2147.24, NULL),
