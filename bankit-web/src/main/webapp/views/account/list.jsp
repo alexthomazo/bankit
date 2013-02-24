@@ -21,6 +21,7 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html>
 	<head>
 		<title>Liste des opérations</title>
@@ -207,7 +208,7 @@
 			
 			<%-- SUMMARY --%>
 			<div class="affix offset10">
-				<h4>Résumé</h4>
+				<h4>Balance</h4>
 				<table class="table table-striped table-hover table-condensed table-summary">
 					<tbody>
 						<tr>
@@ -228,6 +229,25 @@
 						</c:forEach>
 					</tbody>
 				</table>
+				
+				<c:if test="${fn:length(categoriesSummary) > 0}">
+				<h4>Catégories</h4>
+				
+				<c:forEach var="catMonth" items="${categoriesSummary}">
+					<h5><fmt:formatDate pattern="MMMMM" value="${catMonth.key}" /></h5>
+					
+					<table class="table table-striped table-hover table-condensed table-summary">
+						<tbody>
+							<c:forEach var="cat" items="${catMonth.value}">
+							<tr>
+								<td>${cat.key.name}</td>
+								<td>${cat.value}</td>
+							</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:forEach>
+				</c:if>
 			</div>
 			<%-- /SUMMARY --%>
 			

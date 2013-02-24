@@ -22,11 +22,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.alexlg.bankit.dao.AbstractDaoTest;
 import org.alexlg.bankit.dao.CostDao;
 import org.alexlg.bankit.dao.OperationDao;
+import org.alexlg.bankit.db.Category;
 import org.alexlg.bankit.db.Operation;
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -103,6 +107,41 @@ public class AccountControllerTest extends AbstractDaoTest {
 					assertEquals("date", new LocalDate(2012, 9, opDay), new LocalDate(op.getOperationDate()));
 					j++;
 				}
+			}
+			
+			i++;
+		}
+	}
+	
+	@Test
+	public void testBuildCategories() throws Exception {
+		LocalDate day = new LocalDate(2012, 8, 25);
+		Map<Date, Map<Category, BigDecimal>> categories = accountController.buildCategories(day, 1);
+		
+		//we expected a map with the following structure
+		// - 2012-07 :
+		//		- Carburant : -73.07
+		// - 2012-08 :
+		//		- Alimentation : -140.39
+		//		- Communications : -49.98
+		
+		//as we already test the DAO method for month summary, we just check the size
+		
+		assertEquals("Categories size", 2, categories.size());
+		
+		int i = 0;
+		for (Entry<Date, Map<Category, BigDecimal>> entry : categories.entrySet()) {
+			LocalDate month = new LocalDate(entry.getKey());
+			Map<Category, BigDecimal> cat = entry.getValue();
+			
+			if (i == 0) {
+				assertEquals("First month", 7, month.getMonthOfYear());
+				assertEquals("First year", 2012, month.getYear());
+				assertEquals("First size", 1, cat.size());
+			} else if (i == 1) {
+				assertEquals("Second month", 8, month.getMonthOfYear());
+				assertEquals("Second year", 2012, month.getYear());
+				assertEquals("Second size", 2, cat.size());
 			}
 			
 			i++;

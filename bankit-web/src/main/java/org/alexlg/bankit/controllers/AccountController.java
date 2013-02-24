@@ -27,7 +27,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -35,14 +37,17 @@ import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 
+import org.alexlg.bankit.dao.CategoryDao;
 import org.alexlg.bankit.dao.CostDao;
 import org.alexlg.bankit.dao.OperationDao;
+import org.alexlg.bankit.db.Category;
 import org.alexlg.bankit.db.Cost;
 import org.alexlg.bankit.db.Operation;
 import org.alexlg.bankit.services.OptionsService;
 import org.alexlg.bankit.services.SyncService;
 import org.alexlg.bankit.validgroup.AddPlannedOp;
 import org.joda.time.LocalDate;
+import org.joda.time.YearMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +84,9 @@ public class AccountController {
 	
 	@Autowired
 	private CostDao costDao;
+	
+	@Autowired
+	private CategoryDao categoryDao;
 	
 	@Autowired
 	private SyncService syncService;
@@ -197,6 +205,8 @@ public class AccountController {
 		model.put("currentWaiting", current.add(plannedWaiting));
 		model.put("futureOps", futureOps);
 		model.put("lastSyncDate", optionsService.getDate(SyncService.OP_SYNC_OPT));
+		//get categories summary (for previous and current month)
+		model.put("categoriesSummary", buildCategories(day, 1));
 		
 		return "account/list";
 	}
@@ -425,5 +435,28 @@ public class AccountController {
 			balance = monthOps.getBalance();
 		}
 		return futureOps;
+	}
+	
+	/**
+	 * Build categories summary for each month from startDate
+	 * to previous nbPrevMonth
+	 * @param startDate Base date to start the monthly summary from
+	 * @param nbPrevMonth Number of previous month to get in addition
+	 * 			of the month of startDate
+	 * @return Map with the date of the month and a Map with Category
+	 * 			and amount for this category for this month
+	 */
+	protected Map<Date, Map<Category, BigDecimal>> buildCategories(LocalDate startDate, int nbPrevMonth) {
+		Map<Date, Map<Category, BigDecimal>> categories = new LinkedHashMap<Date, Map<Category,BigDecimal>>(nbPrevMonth + 1);
+		
+		for (int i = nbPrevMonth ; i >= 0 ; i--) {
+			LocalDate month = startDate.minusMonths(i);
+			Map<Category, BigDecimal> monthSummary = categoryDao.getMonthSummary(new YearMonth(month));
+			if (monthSummary.size() > 0) {
+				categories.put(month.toDate(), monthSummary);
+			}
+		}
+		
+		return categories;
 	}
 }
