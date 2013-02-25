@@ -37,6 +37,7 @@
 					<ul class="nav nav-list">
 						<li class="nav-header">Options</li>
 						<li class="${page == 'updates' ? 'active' : ''}"><a href="<c:url value='/options/updates' />">Mises à jour</a></li>
+                        <li class="${page == 'category' ? 'active' : ''}"><a href="<c:url value='/options/category' />">Catégories</a></li>
 					</ul>
 				</div>
 			</div>
