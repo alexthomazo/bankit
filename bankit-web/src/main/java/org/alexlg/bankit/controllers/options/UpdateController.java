@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.alexlg.bankit.controllers;
+package org.alexlg.bankit.controllers.options;
 
 import org.alexlg.bankit.services.OptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,27 +29,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller which handles all operations for
- * BankIt options.
+ * BankIt updates options.
  * 
  * @author Alexandre Thomazo
  */
 @Controller
-@RequestMapping("/options")
-public class OptionsController {
+@RequestMapping("/options/updates")
+public class UpdateController {
 
 	@Autowired
 	private OptionsService optionsService;
-	
-	@RequestMapping("/")
-	public String index() {
-		return "redirect:/options/updates";
-	}
 	
 	/**
 	 * Show updates options (automatic updates and channel)
 	 * @return View name
 	 */
-	@RequestMapping(value="/updates", method=RequestMethod.GET)
+	@RequestMapping(value="", method=RequestMethod.GET)
 	public String showUpdatesOption(ModelMap map) {
 		Integer checkUpdates = optionsService.getInteger("checkUpdates");
 		if (checkUpdates == null) checkUpdates = 1;
@@ -69,7 +64,7 @@ public class OptionsController {
 	 * @param updateChannel Channel to check for updates ?
 	 * @return redirect to display form
 	 */
-	@RequestMapping(value="/updates", method=RequestMethod.POST)
+	@RequestMapping(value="", method=RequestMethod.POST)
 	public String saveUpdatesOption(@RequestParam String checkUpdates, @RequestParam String updateChannel,
 			RedirectAttributes redirectAttributes) {
 		if ("1".equals(checkUpdates)) {
