@@ -24,8 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -57,4 +61,36 @@ public class CategoryController {
 		return "options/categories";
 	}
 
+	/**
+	 * Show form to add a category
+	 * @param model Model to fill with a new Category
+	 * @return View name
+	 */
+	@RequestMapping(value="/add", method=RequestMethod.GET)
+	public String showAddCategoryForm(ModelMap model) {
+		model.put("category", new Category());
+		return "options/category-form";
+	}
+
+	/**
+	 * Add a category into the database
+	 * @param category Category to add
+	 * @param result Result of the validation
+	 * @param redirectAttributes Redirect attributes to send to redirect view
+	 * @return View name
+	 */
+	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@Transactional
+	public String addCategory(@ModelAttribute @Validated Category category,
+			BindingResult result,
+			RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			return "options/category-form";
+		} else {
+			categoryDao.insert(category);
+			redirectAttributes.addFlashAttribute("added", category.getCategoryId());
+			return "redirect:/options/category";
+		}
+	}
 }
