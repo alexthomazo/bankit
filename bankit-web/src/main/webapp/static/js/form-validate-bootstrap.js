@@ -47,7 +47,7 @@ jQuery.validator.addMethod("dateFuture", function(value, element) {
 });
 
 $(document).ready(function() {
-	$("#operation").validate({
+	$(".form-validate").validate({
 	    errorElement: 'span', 
 	    errorClass:'help-inline',
 	    errorPlacement: function(error, element) {

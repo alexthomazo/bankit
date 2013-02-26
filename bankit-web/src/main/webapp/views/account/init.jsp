@@ -1,6 +1,6 @@
 <%--
 
-    Copyright (C) 2012 Alexandre Thomazo
+    Copyright (C) 2012-2013 Alexandre Thomazo
 
     This file is part of BankIt.
 
@@ -27,7 +27,7 @@
 		<title>Initialisation</title>
 		<script src="<c:url value='/static/js/form-validate/jquery.validate.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/form-validate/messages_fr.js'/>" type="text/javascript"></script>
-		<script src="<c:url value='/static/js/operation-add.js'/>" type="text/javascript"></script>
+		<script src="<c:url value='/static/js/form-validate-bootstrap.js'/>" type="text/javascript"></script>
 	</head>
 
 	<body>
@@ -43,7 +43,7 @@
 				
 				<div style="margin-top: 39px">
 					<c:url var="formUrl" value="/account/init"/>
-					<form:form method="post" commandName="operation" action="${formUrl}" cssClass="form-inline">
+					<form:form method="post" commandName="operation" action="${formUrl}" cssClass="form-validate form-inline">
 						<form:input path="operationDate" type="hidden"/>
 						<form:input path="label" type="hidden"/>
 						

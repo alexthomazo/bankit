@@ -1,6 +1,6 @@
 <%--
 
-    Copyright (C) 2012 Alexandre Thomazo
+    Copyright (C) 2012-2013 Alexandre Thomazo
 
     This file is part of BankIt.
 
@@ -32,7 +32,7 @@
 
 	<body>
 		<c:url var="formUrl" value="/account/add"/>
-		<form:form method="post" commandName="operation" action="${formUrl}" cssClass="form-horizontal">
+		<form:form method="post" commandName="operation" action="${formUrl}" cssClass="form-validate form-horizontal">
 			
 			<spring:bind path="operationDate">
 			<div class="control-group ${status.error ? 'error' : '' }">
@@ -100,7 +100,7 @@
 		<c:if test="${not empty param.js}">
 		<script src="<c:url value='/static/js/form-validate/jquery.validate.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/form-validate/messages_fr.js'/>" type="text/javascript"></script>
-		<script src="<c:url value='/static/js/operation-add.js'/>" type="text/javascript"></script>
+		<script src="<c:url value='/static/js/form-validate-bootstrap.js'/>" type="text/javascript"></script>
 		</c:if>
 	</body>
 </html>
