@@ -61,7 +61,7 @@ public class Category {
 		return name;
 	}
 
-	@OneToMany(mappedBy = "category")
+	@OneToMany(mappedBy = "category", orphanRemoval = true)
 	public Collection<Operation> getOperations() {
 		return operations;
 	}

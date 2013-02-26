@@ -23,6 +23,8 @@
 <html>
 <head>
 	<title>Catégories</title>
+	<link href="<c:url value='/static/css/categories.css'/>" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="<c:url value='/static/js/categories.js' />"></script>
 </head>
 
 <body>
@@ -37,6 +39,12 @@
 				<strong>Catégorie ajoutée.</strong>&nbsp;&nbsp;&nbsp;<small><a href="<c:url value='/options/category/del/${added}'/>">Annuler</a></small>
 			</div>
 		</c:if>
+		<c:if test="${edited != null}">
+			<div class="alert alert-success">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Catégorie mise à jour.</strong>
+			</div>
+		</c:if>
 		<c:if test="${deleted}">
 			<div class="alert alert-success">
 				<button type="button" class="close" data-dismiss="alert">×</button>
@@ -49,7 +57,7 @@
 <%-- CATEGORIES LIST --%>
 <div class="row">
 	<div class="span4">
-		<table class="table table-striped table-hover table-condensed">
+		<table class="table-category table table-striped table-hover table-condensed">
 			<thead>
 			<tr>
 				<th>Nom</th>
@@ -61,7 +69,11 @@
 			<c:forEach var="cat" items="${categories}">
 				<tr>
 					<td>${cat.name}</td>
-					<td></td>
+					<td>
+						<a href="<c:url value='/options/category/edit/${cat.categoryId}'/>"
+							data-toggle="modal" data-target="#edit-modal"><i class="icon-pencil"></i></a>
+						<a href="<c:url value='/options/category/del/${cat.categoryId}'/>"><i class="icon-trash"></i></a>
+					</td>
 				</tr>
 			</c:forEach>
 			</tbody>
@@ -82,11 +94,21 @@
 <div id="add-modal" class="modal hide fade">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">×</button>
-		<h2>Ajouter une catégorie</h2>
+		<h2>Ajout d'une catégorie</h2>
 	</div>
 	<div class="modal-body">Chargement du formulaire...</div>
 </div>
 <%-- /ADD MODAL BOX --%>
+
+<%-- EDIT MODAL BOX --%>
+<div id="edit-modal" class="modal hide fade">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h2>Modification d'une catégorie</h2>
+	</div>
+	<div class="modal-body">Chargement du formulaire...</div>
+</div>
+<%-- /EDIT MODAL BOX --%>
 
 </body>
 

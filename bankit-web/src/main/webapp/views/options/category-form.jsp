@@ -29,7 +29,14 @@
 	</head>
 
 	<body>
-		<c:url var="formUrl" value="/options/category/add"/>
+		<c:choose>
+			<c:when test="${category.categoryId == 0}">
+				<c:url var="formUrl" value="/options/category/add"/>
+			</c:when>
+			<c:otherwise>
+				<c:url var="formUrl" value="/options/category/edit"/>
+			</c:otherwise>
+		</c:choose>
 		<form:form method="post" commandName="category" action="${formUrl}" cssClass="form-validate form-horizontal">
 			
 			<spring:bind path="name">
@@ -46,7 +53,15 @@
 
 			<div class="control-group">
 				<div class="controls">
-					 <button type="submit" class="btn btn-primary">Ajouter</button>
+					<c:choose>
+						<c:when test="${category.categoryId == 0}">
+							<button type="submit" class="btn btn-primary">Ajouter</button>
+						</c:when>
+						<c:otherwise>
+							<button type="submit" class="btn btn-primary">Mettre à jour</button>
+							<form:hidden path="categoryId" />
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 		</form:form>
