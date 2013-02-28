@@ -10,7 +10,7 @@ INSERT INTO `operations` (`operation_id`, `value_date`, `operation_date`, `label
 (14, NULL,        '2012-06-14', 'PLANNED', -200, NULL, NULL),
 (1, '2012-07-20', '2012-07-21', 'ESSENCE', NULL, -73.07, 1),
 (2, '2012-07-27', '2012-07-27', 'SALAIRE', NULL, 1703.14, NULL),
-(11,'2012-08-01', '2012-08-01', 'LOYER', NULL, -600, NULL),
+(11,'2012-08-01', '2012-08-01', 'LOYER', NULL, -600, 4),
 (3, '2012-08-14', '2012-08-14', 'SUPERMARCHE', NULL, -45.87, 3),
 (4, '2012-08-15', '2012-08-13', 'EPARGNE', -500, -500, NULL),
 (5, '2012-08-15', '2012-08-15', 'SUPERMARCHE', NULL, -21.45, 3),

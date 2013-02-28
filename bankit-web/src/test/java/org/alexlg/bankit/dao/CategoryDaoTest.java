@@ -41,11 +41,25 @@ public class CategoryDaoTest extends AbstractDaoTest {
 	/** Test if each category has the correct amount */
 	@Test
 	public void testGetMonthSummary() throws Exception {
-		YearMonth yearMonth = new YearMonth(2012, 8);
-		
+		//testing a first month
+		YearMonth yearMonth = new YearMonth(2012, 7);
 		Map<Category, BigDecimal> categories = categoryDao.getMonthSummary(yearMonth);
-		
-		assertEquals(2, categories.size());
+
+		assertEquals(1, categories.size());
+
+		for (Map.Entry<Category, BigDecimal> entry : categories.entrySet()) {
+			Category category = entry.getKey();
+
+			//testing amount
+			assertEquals("Carburant name", "Carburant", category.getName());
+			assertEquals("Carburant amount", new BigDecimal("-73.07"), entry.getValue());
+		}
+
+		//testing next month
+		yearMonth = new YearMonth(2012, 8);
+		categories = categoryDao.getMonthSummary(yearMonth);
+
+		assertEquals(3, categories.size());
 
 		int i = 0;
 		for (Map.Entry<Category, BigDecimal> entry : categories.entrySet()) {
@@ -55,13 +69,23 @@ public class CategoryDaoTest extends AbstractDaoTest {
 			if (category.getName().equals("Alimentation")) {
 				assertEquals("Alimentation amount", new BigDecimal("-140.39"), entry.getValue());
 				assertEquals("Alimentation order", 0, i);
+				i++;
 
 			} else if (category.getName().equals("Communications")) {
 				assertEquals("Communication amount", new BigDecimal("-49.98"), entry.getValue());
 				assertEquals("Communcation order", 1, i);
+				i++;
+
+			} else if (category.getName().equals("Divers")) {
+				assertEquals("Divers amount", new BigDecimal("-600.00"), entry.getValue());
+				assertEquals("Divers order", 2, i);
+				i++;
 			}
-			i++;
 		}
+
+		//check if the "i" has been incremented by all if in the loop
+		//and so every category has been tested
+		assertEquals("Not checked all categories", 3, i);
 	}
 	
 }

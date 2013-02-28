@@ -77,7 +77,7 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		
 		//where clause
 		LocalDate startDate = yearMonth.toLocalDate(1);
-		LocalDate endDate = startDate.plusMonths(1);
+		LocalDate endDate = startDate.withDayOfMonth(startDate.dayOfMonth().getMaximumValue());
 		q.where(b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()));
 
 		//group by
