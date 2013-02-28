@@ -108,3 +108,8 @@ span.minus { border-bottom-color: #FF0000; }
 .table-summary {
 	font-size: 90%;
 }
+
+/* amount column */
+.table-summary th:nth-child(2), .table-summary td:nth-child(2) {
+	text-align: right;
+}
