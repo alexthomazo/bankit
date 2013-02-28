@@ -46,17 +46,21 @@ public class CategoryDaoTest extends AbstractDaoTest {
 		Map<Category, BigDecimal> categories = categoryDao.getMonthSummary(yearMonth);
 		
 		assertEquals(2, categories.size());
-		
+
+		int i = 0;
 		for (Map.Entry<Category, BigDecimal> entry : categories.entrySet()) {
 			Category category = entry.getKey();
 			
-			//testing amount
+			//testing amount and order
 			if (category.getName().equals("Alimentation")) {
 				assertEquals("Alimentation amount", new BigDecimal("-140.39"), entry.getValue());
+				assertEquals("Alimentation order", 0, i);
 
 			} else if (category.getName().equals("Communications")) {
 				assertEquals("Communication amount", new BigDecimal("-49.98"), entry.getValue());
+				assertEquals("Communcation order", 1, i);
 			}
+			i++;
 		}
 	}
 	

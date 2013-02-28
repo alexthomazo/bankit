@@ -61,17 +61,31 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		Join<Operation, Category> category = operation.join(Operation_.category);
 		
 		//select
+		//sum all amount operation for operation imported from the bank
 		Expression<BigDecimal> sum = b.sum(operation.get(Operation_.amount));
-		q.select(b.tuple(category, sum));
-		
-		//groupby
-		q.groupBy(category.get(Category_.categoryId));
+
+		//sum only planned amount if the amount is not set (as we have a planned operation)
+		//we use a sum(case when xx end) for that
+		//in sql, it will be translated into : sum(case when o.amount is null then o.planned otherwise 0 end)
+		Expression<BigDecimal> sumPlanned =
+				b.sum(b.<BigDecimal>selectCase()
+						.when(b.isNull(operation.get(Operation_.amount)), operation.get(Operation_.planned))
+						.otherwise(BigDecimal.ZERO));
+
+		//select the 3 fields into a tuple
+		q.select(b.tuple(category, sum, sumPlanned));
 		
 		//where clause
 		LocalDate startDate = yearMonth.toLocalDate(1);
 		LocalDate endDate = startDate.plusMonths(1);
 		q.where(b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()));
-		
+
+		//group by
+		q.groupBy(category.get(Category_.categoryId));
+
+		//order by
+		q.orderBy(b.asc(category.get(Category_.name)));
+
 		//execute query
 		List<Tuple> results = getEm().createQuery(q).getResultList();
 		
@@ -79,37 +93,9 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		Map<Category, BigDecimal> resMap = new LinkedHashMap<Category, BigDecimal>(results.size());
 		for (Tuple res : results) {
 			BigDecimal sumVal = res.get(sum);
-			if (!sumVal.equals(BigDecimal.ZERO)) {
-				resMap.put(res.get(category), sumVal);
-			}
-		}
-		
-		//SELECT PLANNED OPERATION
-		//select
-		sum = b.sum(operation.get(Operation_.planned));
-		q.select(b.tuple(category, sum));
-		
-		//where (passed amount must be null because already summed previously)
-		q.where(b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()),
-				b.isNull(operation.get(Operation_.amount)));
-		
-		//execute query
-		results = getEm().createQuery(q).getResultList();
-		
-		
-		//put in map
-		for (Tuple res : results) {
-			BigDecimal sumVal = res.get(sum);
-			Category cat = res.get(category);
-			
-			if (!sumVal.equals(BigDecimal.ZERO)) {
-				BigDecimal amount = resMap.get(cat);
-				if (amount != null) {
-					amount = amount.add(sumVal);
-				} else {
-					amount = sumVal;
-				}
-				resMap.put(cat, amount);
+			BigDecimal sumPlannedVal = res.get(sumPlanned);
+			if (!sumVal.equals(BigDecimal.ZERO) || !sumPlannedVal.equals(BigDecimal.ZERO)) {
+				resMap.put(res.get(category), sumVal.add(sumPlannedVal));
 			}
 		}
 				
