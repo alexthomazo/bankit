@@ -124,6 +124,7 @@ public class AccountControllerTest extends AbstractDaoTest {
 		// - 2012-08 :
 		//		- Alimentation : -140.39
 		//		- Communications : -49.98
+		//		- Divers : -600.00
 		
 		//as we already test the DAO method for month summary, we just check the size
 		
@@ -141,7 +142,7 @@ public class AccountControllerTest extends AbstractDaoTest {
 			} else if (i == 1) {
 				assertEquals("Second month", 8, month.getMonthOfYear());
 				assertEquals("Second year", 2012, month.getYear());
-				assertEquals("Second size", 2, cat.size());
+				assertEquals("Second size", 3, cat.size());
 			}
 			
 			i++;
