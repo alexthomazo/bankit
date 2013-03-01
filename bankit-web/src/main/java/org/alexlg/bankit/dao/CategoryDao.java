@@ -94,6 +94,9 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		for (Tuple res : results) {
 			BigDecimal sumVal = res.get(sum);
 			BigDecimal sumPlannedVal = res.get(sumPlanned);
+			if (sumVal == null) sumVal = BigDecimal.ZERO;
+			if (sumPlannedVal == null) sumPlannedVal = BigDecimal.ZERO;
+
 			if (!sumVal.equals(BigDecimal.ZERO) || !sumPlannedVal.equals(BigDecimal.ZERO)) {
 				resMap.put(res.get(category), sumVal.add(sumPlannedVal));
 			}
