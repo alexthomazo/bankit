@@ -70,7 +70,7 @@
 				<tr>
 					<td>${cat.name}</td>
 					<td>
-						<a href="<c:url value='/options/category/edit/${cat.categoryId}'/>"
+						<a href="<c:url value='/options/category/edit/${cat.categoryId}'/>?js=t"
 							data-toggle="modal" data-target="#edit-modal"><i class="icon-pencil"></i></a>
 						<a href="<c:url value='/options/category/del/${cat.categoryId}'/>"><i class="icon-trash"></i></a>
 					</td>

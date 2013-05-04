@@ -17,13 +17,8 @@
  * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
  */
 $(document).ready(function() {
-	//override twitter bootstrap click event in order to reload
-	//the content of the modal box
-	$("[data-toggle=modal]").click(function(ev) {
-		ev.preventDefault();
-		// load the url and show modal on success
-		$( $(this).attr('data-target') + " .modal-body").load($(this).attr("href") + "?js=t", function() {
-			$($(this).attr('data-target')).modal("show");
-		});
+	//remove modal object when hidden the model in order to reload the data every time
+	$('body').on('hidden', '.modal', function () {
+		$(this).removeData('modal');
 	});
 });
