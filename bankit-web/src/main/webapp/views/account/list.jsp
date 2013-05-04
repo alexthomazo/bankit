@@ -194,6 +194,7 @@
 							<td>${op.label}</td>
 							
 							<td>
+							<%-- Category --%>
 							<c:if test="${not op.auto}">
 								<select id="cat_${op.operationId}" class="cat_select">
 									<option value="-1"></option>
@@ -204,6 +205,9 @@
 										>${cat.name}</option>
 									</c:forEach>
 								</select>
+							</c:if>
+							<c:if test="${op.auto}">
+								${op.category.name}
 							</c:if>
 							</td>
 							

@@ -59,6 +59,16 @@ public abstract class AbstractDao <T, KeyType extends Serializable> {
 	}
 
 	/**
+	 * Retrieve an instance of the object without loading
+	 * it from the database (the returned object is a lazy
+	 * loaded proxy)
+	 * @param id Id of the object
+	 * @return Proxy of the object
+	 */
+	public T load(KeyType id) {
+		return em.getReference(domainClass, id);
+	}
+	/**
 	 * Insert an object in the database
 	 * @param object Object to insert
 	 */

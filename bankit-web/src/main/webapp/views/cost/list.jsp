@@ -75,6 +75,7 @@
 						<tr>
 							<th>Jour</th>
 							<th>Libellé</th>
+							<th>Catégorie</th>
 							<th>Montant</th>
 							<th></th>
 						</tr>
@@ -85,6 +86,7 @@
 						<tr>
 							<td>${c.day}</td>
 							<td>${c.label}</td>
+							<td>${c.category.name}</td>
 							<td>${c.amount}</td>
 							<td>
 								<a href="<c:url value='/cost/edit/${c.costId}'/>?js=t"

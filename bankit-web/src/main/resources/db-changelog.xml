@@ -95,4 +95,16 @@
 								 referencedColumnNames="category_id"/>
 	</changeSet>
 
+	<changeSet id="5" author="alex">
+		<comment>Adding category to cost</comment>
+		<addColumn tableName="costs">
+			<column name="category_id" type="int" />
+		</addColumn>
+
+		<addForeignKeyConstraint constraintName="fk_costs_category_id"
+								 baseTableName="costs" baseColumnNames="category_id"
+								 referencedTableName="categories"
+								 referencedColumnNames="category_id"/>
+	</changeSet>
+
 </databaseChangeLog>

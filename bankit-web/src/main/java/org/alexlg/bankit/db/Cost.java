@@ -20,13 +20,7 @@ package org.alexlg.bankit.db;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -50,10 +44,16 @@ public class Cost {
 	private String label;
 	/** Amount planned for this cost */
 	private BigDecimal amount;
+
+	//-- FOREIGN KEYS
+	/** Category attached to this operation */
+	private Category category;
 	
 	//-- TRANSIENT / NOT PERSISTENT
 	/** Is this operation is a cost or an income */
 	private boolean cost;
+	/** Id of the category, used for form selection */
+	private int categoryId;
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="cost_id")
@@ -77,10 +77,22 @@ public class Cost {
 	public BigDecimal getAmount() {
 		return amount;
 	}
-	
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="category_id")
+	public Category getCategory() {
+		return category;
+	}
+
 	@Transient
 	public boolean isCost() {
 		return cost;
+	}
+
+	@Transient
+	public int getCategoryId() {
+		if (category != null) categoryId = category.getCategoryId();
+		return categoryId;
 	}
 
 	public void setCostId(int costId) {
@@ -95,8 +107,14 @@ public class Cost {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	public void setCost(boolean cost) {
 		this.cost = cost;
+	}
+	public void setCategoryId(int categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	@Override

@@ -142,6 +142,7 @@ public class SyncService {
 					op.setOperationDate(opDate.toDate());
 					op.setLabel(cost.getLabel());
 					op.setPlanned(cost.getAmount());
+					op.setCategory(cost.getCategory());
 					operationDao.save(op);
 				}
 			}

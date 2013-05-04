@@ -64,6 +64,18 @@
 				</div>
 			</div>
 			</spring:bind>
+
+			<spring:bind path="categoryId">
+				<div class="control-group ${status.error ? 'error' : '' }">
+					<form:label cssClass="control-label" path="day">Categorie:</form:label>
+					<div class="controls">
+						<form:select path="categoryId" items="${categories}" />
+						<c:if test="${status.error}">
+							<span class="help-inline">${status.errorMessage}</span>
+						</c:if>
+					</div>
+				</div>
+			</spring:bind>
 			
 			<spring:bind path="amount">
 			<div class="control-group ${status.error ? 'error' : '' }">

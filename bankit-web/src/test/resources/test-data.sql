@@ -22,11 +22,11 @@ INSERT INTO `operations` (`operation_id`, `value_date`, `operation_date`, `label
 (12, NULL, '2012-08-27', 'Impots Revenu', -845, NULL, NULL);
 
 
-INSERT INTO `costs` (`cost_id`, `day`, `label`, `amount`) VALUES
-(1, 27, 'VIR SALAIRE', 1700.14),
-(2, 1, 'VIR LOYER', -595.12),
-(3, 3, 'PRLV Assurance Auto', -70.48),
-(4, 24, 'PRLV Free Mobile', -19.99);
+INSERT INTO `costs` (`cost_id`, `day`, `label`, `amount`, `category_id`) VALUES
+(1, 27, 'VIR SALAIRE', 1700.14, NULL),
+(2, 1, 'VIR LOYER', -595.12, NULL),
+(3, 3, 'PRLV Assurance Auto', -70.48, NULL),
+(4, 24, 'PRLV Free Mobile', -19.99, 2);
 
 INSERT INTO `options` (`option_id`, `name`, `string_val`, `date_val`, `int_val`) VALUES
 (11, 'testString', 'test string', NULL, NULL),

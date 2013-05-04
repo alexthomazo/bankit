@@ -18,7 +18,9 @@
  */
 package org.alexlg.bankit.controllers;
 
+import org.alexlg.bankit.dao.CategoryDao;
 import org.alexlg.bankit.dao.CostDao;
+import org.alexlg.bankit.db.Category;
 import org.alexlg.bankit.db.Cost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +36,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.FileNotFoundException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller which handles all operations for
@@ -48,7 +52,10 @@ public class CostController {
 
 	@Autowired
 	private CostDao costDao;
-	
+
+	@Autowired
+	private CategoryDao categoryDao;
+
 	@RequestMapping("/")
 	public String index() {
 		return "redirect:/cost/list";
@@ -78,6 +85,8 @@ public class CostController {
 		Cost cost = new Cost();
 		cost.setCost(true);
 		model.addAttribute("cost", cost);
+		//inject categories list
+		model.put("categories", buildCategoriesList());
 		return "cost/form";
 	}
 	
@@ -122,12 +131,16 @@ public class CostController {
 		if (cost == null) {
 			throw new FileNotFoundException("Cost [" + costId + "] not found");
 		}
-
+		//reverting amount if it's a cost to display the cost/income option correctly
 		if (cost.getAmount().signum() == -1) {
 			cost.setAmount(cost.getAmount().negate());
 			cost.setCost(true);
 		}
 		model.put("cost", cost);
+
+		//inject categories list
+		model.put("categories", buildCategoriesList());
+
 		return "cost/form";
 	}
 
@@ -152,6 +165,14 @@ public class CostController {
 				cost.setAmount(cost.getAmount().negate());
 				cost.setCost(false);
 			}
+
+			//inject category by category id
+			if (cost.getCategoryId() < 0) {
+				cost.setCategory(null);
+			} else {
+				cost.setCategory(categoryDao.load(cost.getCategoryId()));
+			}
+
 			costDao.save(cost);
 			redirectAttributes.addFlashAttribute("edited", cost.getCostId());
 			return "redirect:/cost/list";
@@ -174,4 +195,20 @@ public class CostController {
 		}
 		return "redirect:/cost/list";
 	}
+
+	/**
+	 * Build a Id/Name map of the categories
+	 * @return Map Id/Name of the categories with -1/"" at the top
+	 */
+	private Map<Integer, String> buildCategoriesList() {
+		List<Category> categories = categoryDao.getList();
+		Map<Integer, String> res = new LinkedHashMap<Integer, String>(categories.size());
+		res.put(-1, "");
+
+		for (Category category : categories) {
+			res.put(category.getCategoryId(), category.getName());
+		}
+		return res;
+	}
+
 }

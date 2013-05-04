@@ -17,6 +17,8 @@
  * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
  */
 $(document).ready(function() {
+	$('*[title]').tooltip({placement: 'bottom'});
+
 	//remove modal object when hidden the model in order to reload the data every time
 	$('body').on('hidden', '.modal', function () {
 		$(this).removeData('modal');
