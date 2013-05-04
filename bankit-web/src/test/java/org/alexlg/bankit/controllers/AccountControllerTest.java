@@ -18,15 +18,6 @@
  */
 package org.alexlg.bankit.controllers;
 
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.alexlg.bankit.dao.AbstractDaoTest;
 import org.alexlg.bankit.dao.CostDao;
 import org.alexlg.bankit.dao.OperationDao;
@@ -35,6 +26,15 @@ import org.alexlg.bankit.db.Operation;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test class for the account controller.
@@ -125,6 +125,7 @@ public class AccountControllerTest extends AbstractDaoTest {
 		//		- Alimentation : -140.39
 		//		- Communications : -49.98
 		//		- Divers : -600.00
+		//      - "" : -1505.00
 		
 		//as we already test the DAO method for month summary, we just check the size
 		
@@ -142,7 +143,7 @@ public class AccountControllerTest extends AbstractDaoTest {
 			} else if (i == 1) {
 				assertEquals("Second month", 8, month.getMonthOfYear());
 				assertEquals("Second year", 2012, month.getYear());
-				assertEquals("Second size", 3, cat.size());
+				assertEquals("Second size", 4, cat.size());
 			}
 			
 			i++;
