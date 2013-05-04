@@ -25,11 +25,7 @@
 	<head>
 		<title>Liste des charges/revenus</title>
 		<link href="<c:url value='/static/css/cost.css'/>" type="text/css" rel="stylesheet" />
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('*[title]').tooltip({placement: 'bottom'});
-			});
-		</script>
+		<script type="text/javascript" src="<c:url value='/static/js/costs.js' />"></script>
 	</head>
 
 	<body>
@@ -41,6 +37,12 @@
 					<button type="button" class="close" data-dismiss="alert">×</button>
 					<strong>Charge ajoutée.</strong>&nbsp;&nbsp;&nbsp;<small><a href="<c:url value='/cost/del/${added}'/>">Annuler</a></small>
 				</div>
+				</c:if>
+				<c:if test="${edited != null}">
+					<div class="alert alert-success">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<strong>Charge mise à jour.</strong>
+					</div>
 				</c:if>
 				<c:if test="${deleted}">
 				<div class="alert alert-success">
@@ -85,6 +87,11 @@
 							<td>${c.label}</td>
 							<td>${c.amount}</td>
 							<td>
+								<a href="<c:url value='/cost/edit/${c.costId}'/>?js=t"
+								   title="Modifier la charge"
+								   data-toggle="modal" data-target="#edit-modal">
+									<i class="icon-pencil"></i>
+								</a>
 								<a href="<c:url value='/cost/del/${c.costId}'/>" title="Supprimer la charge"><i class="icon-trash"></i></a>
 							</td>
 						</tr>
@@ -108,6 +115,16 @@
 				<div class="modal-body">Chargement du formulaire...</div>
 			</div>
 			<%-- /ADD MODAL BOX --%>
+
+			<%-- EDIT MODAL BOX --%>
+			<div id="edit-modal" class="modal hide fade">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					<h2>Modifier une charge ou un revenu</h2>
+				</div>
+				<div class="modal-body">Chargement du formulaire...</div>
+			</div>
+			<%-- /EDIT MODAL BOX --%>
 		</div>
 	</body>
 </html>

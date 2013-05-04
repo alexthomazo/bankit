@@ -18,10 +18,6 @@
  */
 package org.alexlg.bankit.controllers;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import org.alexlg.bankit.dao.CostDao;
 import org.alexlg.bankit.db.Cost;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +25,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * Controller which handles all operations for
@@ -77,7 +78,7 @@ public class CostController {
 		Cost cost = new Cost();
 		cost.setCost(true);
 		model.addAttribute("cost", cost);
-		return "cost/add";
+		return "cost/form";
 	}
 	
 	/**
@@ -94,7 +95,7 @@ public class CostController {
 			RedirectAttributes redirectAttributes) {
 		
 		if (result.hasErrors()) {
-			return "cost/add";
+			return "cost/form";
 		} else {
 			if (cost.isCost()) {
 				//negate the amount if needed
@@ -106,7 +107,57 @@ public class CostController {
 			return "redirect:/cost/list";
 		}
 	}
-	
+
+	/**
+	 * Show the edit cost form
+	 * @param costId Id of the cost to edit
+	 * @param model Model to fill with the cost to edit
+	 * @return View name
+	 * @throws FileNotFoundException If the cost doesn't exist
+	 */
+	@RequestMapping(value = "/edit/{costId}", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public String showEditCostForm(@PathVariable int costId, ModelMap model) throws FileNotFoundException {
+		Cost cost = costDao.get(costId);
+		if (cost == null) {
+			throw new FileNotFoundException("Cost [" + costId + "] not found");
+		}
+
+		if (cost.getAmount().signum() == -1) {
+			cost.setAmount(cost.getAmount().negate());
+			cost.setCost(true);
+		}
+		model.put("cost", cost);
+		return "cost/form";
+	}
+
+	/**
+	 * Update a cost
+	 * @param cost Cost to update
+	 * @param result Validation result
+	 * @param redirectAttributes Redirect attributes to send to redirect view
+	 * @return View name
+	 */
+	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@Transactional
+	public String editCost(@ModelAttribute @Validated Cost cost,
+						   BindingResult result,
+						   RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			return "cost/form";
+		} else {
+			if (cost.isCost()) {
+				//negate the amount if needed
+				cost.setAmount(cost.getAmount().negate());
+				cost.setCost(false);
+			}
+			costDao.save(cost);
+			redirectAttributes.addFlashAttribute("edited", cost.getCostId());
+			return "redirect:/cost/list";
+		}
+	}
+
 	/**
 	 * Delete a cost.
 	 * @param costId Id of the cost to delete

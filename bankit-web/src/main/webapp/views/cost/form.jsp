@@ -31,7 +31,14 @@
 	</head>
 
 	<body>
-		<c:url var="formUrl" value="/cost/add"/>
+		<c:choose>
+			<c:when test="${cost.costId == 0}">
+				<c:url var="formUrl" value="/cost/add"/>
+			</c:when>
+			<c:otherwise>
+				<c:url var="formUrl" value="/cost/edit"/>
+			</c:otherwise>
+		</c:choose>
 		<form:form method="post" commandName="cost" action="${formUrl}" cssClass="form-horizontal">
 			
 			<spring:bind path="label">
@@ -91,7 +98,15 @@
 			
 			<div class="control-group">
 				<div class="controls">
-					 <button type="submit" class="btn btn-primary">Ajouter</button>
+					<c:choose>
+						<c:when test="${cost.costId == 0}">
+							<button type="submit" class="btn btn-primary">Ajouter</button>
+						</c:when>
+						<c:otherwise>
+							<button type="submit" class="btn btn-primary">Mettre à jour</button>
+							<form:hidden path="costId" />
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 		</form:form>

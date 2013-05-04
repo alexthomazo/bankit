@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Alexandre Thomazo
+ * Copyright (C) 2013 Alexandre Thomazo
  *
  * This file is part of BankIt.
  *
@@ -16,25 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with BankIt. If not, see <http://www.gnu.org/licenses/>.
  */
-/** COST TABLE **/
-.table-cost {
-	font-size: 95%;
-}
-
-.table-cost a:hover { text-decoration: none; }
-
-/* Day column */
-.table-cost td:nth-child(1) {
-	width: 40px;
-}
-
-/* Amount column */
-.table-cost th:nth-child(4), .table-cost td:nth-child(4) {
-	width: 80px;
-	text-align: right;
-}
-
-/* Operation column */
-.table-cost th:nth-child(5), .table-cost td:nth-child(5) {
-	width: 15px;
-}
+$(document).ready(function() {
+	//remove modal object when hidden the model in order to reload the data every time
+	$('body').on('hidden', '.modal', function () {
+		$(this).removeData('modal');
+	});
+});
