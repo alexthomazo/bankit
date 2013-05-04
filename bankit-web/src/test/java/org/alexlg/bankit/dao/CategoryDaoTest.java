@@ -18,15 +18,15 @@
  */
 package org.alexlg.bankit.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
 import org.alexlg.bankit.db.Category;
 import org.joda.time.YearMonth;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * {@link CategoryDao} test class
@@ -59,7 +59,7 @@ public class CategoryDaoTest extends AbstractDaoTest {
 		yearMonth = new YearMonth(2012, 8);
 		categories = categoryDao.getMonthSummary(yearMonth);
 
-		assertEquals(3, categories.size());
+		assertEquals(4, categories.size());
 
 		int i = 0;
 		for (Map.Entry<Category, BigDecimal> entry : categories.entrySet()) {
@@ -80,12 +80,17 @@ public class CategoryDaoTest extends AbstractDaoTest {
 				assertEquals("Divers amount", new BigDecimal("-600.00"), entry.getValue());
 				assertEquals("Divers order", 2, i);
 				i++;
+
+			} else if (category.getName().equals("")) {
+				assertEquals("No cat amount", new BigDecimal("-1505.00"), entry.getValue());
+				assertEquals("No cat order", 3, i);
+				i++;
 			}
 		}
 
 		//check if the "i" has been incremented by all if in the loop
 		//and so every category has been tested
-		assertEquals("Not checked all categories", 3, i);
+		assertEquals("Not checked all categories", 4, i);
 	}
 	
 }

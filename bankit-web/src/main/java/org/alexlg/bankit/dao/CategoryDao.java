@@ -18,18 +18,6 @@
  */
 package org.alexlg.bankit.dao;
 
-import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-
 import org.alexlg.bankit.db.Category;
 import org.alexlg.bankit.db.Category_;
 import org.alexlg.bankit.db.Operation;
@@ -37,6 +25,13 @@ import org.alexlg.bankit.db.Operation_;
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 import org.springframework.stereotype.Controller;
+
+import javax.persistence.Tuple;
+import javax.persistence.criteria.*;
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * DAO for categories
@@ -58,7 +53,8 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		//create criteria and join
 		CriteriaQuery<Tuple> q = b.createTupleQuery();
 		Root<Operation> operation = q.from(Operation.class);
-		Join<Operation, Category> category = operation.join(Operation_.category);
+		//we left join to get operation with no categories
+		Join<Operation, Category> category = operation.join(Operation_.category, JoinType.LEFT);
 		
 		//select
 		//sum all amount operation for operation imported from the bank
@@ -75,10 +71,17 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		//select the 3 fields into a tuple
 		q.select(b.tuple(category, sum, sumPlanned));
 		
-		//where clause
+		//where clause : between the start/end date, and for operation with no category, only < 0
 		LocalDate startDate = yearMonth.toLocalDate(1);
 		LocalDate endDate = startDate.withDayOfMonth(startDate.dayOfMonth().getMaximumValue());
-		q.where(b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()));
+		q.where(
+				b.between(operation.get(Operation_.operationDate), startDate.toDate(), endDate.toDate()),
+				b.or(
+						b.isNotNull(operation.get(Operation_.category)),
+						b.lt(operation.get(Operation_.amount), 0),
+						b.lt(operation.get(Operation_.planned), 0)
+				)
+		);
 
 		//group by
 		q.groupBy(category.get(Category_.categoryId));
@@ -91,17 +94,34 @@ public class CategoryDao extends AbstractDao<Category, Integer> {
 		
 		//put in map
 		Map<Category, BigDecimal> resMap = new LinkedHashMap<Category, BigDecimal>(results.size());
+		//saving null category for adding at the end
+		BigDecimal noCatAmount = null;
 		for (Tuple res : results) {
+			Category resCat = res.get(category);
+
 			BigDecimal sumVal = res.get(sum);
 			BigDecimal sumPlannedVal = res.get(sumPlanned);
 			if (sumVal == null) sumVal = BigDecimal.ZERO;
 			if (sumPlannedVal == null) sumPlannedVal = BigDecimal.ZERO;
+			BigDecimal sumTotal = sumVal.add(sumPlannedVal);
 
-			if (!sumVal.equals(BigDecimal.ZERO) || !sumPlannedVal.equals(BigDecimal.ZERO)) {
-				resMap.put(res.get(category), sumVal.add(sumPlannedVal));
+			if (!sumTotal.equals(BigDecimal.ZERO)) {
+				if (resCat != null) {
+					resMap.put(resCat, sumTotal);
+				} else {
+					noCatAmount = sumTotal;
+				}
 			}
 		}
-				
+
+		//adding operation with no categories at the end of the list
+		if (noCatAmount != null) {
+			Category noCat = new Category();
+			noCat.setCategoryId(-1);
+			noCat.setName("");
+			resMap.put(noCat, noCatAmount);
+		}
+
 		return resMap;
 	}
 

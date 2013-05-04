@@ -272,7 +272,12 @@
 						<tbody>
 							<c:forEach var="cat" items="${catMonth.value}">
 							<tr>
-								<td>${cat.key.name}</td>
+								<td>
+									<c:choose>
+										<c:when test="${cat.key.categoryId == -1}">Non catégorisé</c:when>
+										<c:otherwise>${cat.key.name}</c:otherwise>
+									</c:choose>
+								</td>
 								<td>${cat.value}</td>
 							</tr>
 							</c:forEach>
