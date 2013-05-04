@@ -18,19 +18,6 @@
  */
 package org.alexlg.bankit.services;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.alexlg.bankit.dao.CostDao;
 import org.alexlg.bankit.dao.OperationDao;
 import org.alexlg.bankit.db.Cost;
@@ -43,6 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Service used for synchronization between costs, operation
@@ -173,6 +169,7 @@ public class SyncService {
 			
 			if (matchedOp != null) {
 				matchedOp.setPlanned(oldOp.getPlanned());
+				matchedOp.setCategory(oldOp.getCategory());
 				operationDao.delete(oldOp);
 			}
 		}
