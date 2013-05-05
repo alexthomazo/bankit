@@ -26,6 +26,8 @@
 	<head>
 		<title>Liste des opérations</title>
 		<link href="<c:url value='/static/css/account.css'/>" type="text/css" rel="stylesheet" />
+		<link href="<c:url value='/static/css/timeframe.css'/>" type="text/css" rel="stylesheet" />
+		<script src="<c:url value='/static/js/timeframe.class.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/operation-list.js'/>" type="text/javascript"></script>
 	</head>
 
@@ -47,9 +49,13 @@
 				</c:if>
 			</div>
 		</div>
-	
-		<%-- TITLE --%>
+
+
 		<div class="row">
+			<%-- TIMEFRAME --%>
+			<div id="timeframe" class="span10"></div>
+
+			<%-- TITLE --%>
 			<div class="span5">
 				<h2>Compte chèque</h2>			
 			</div>

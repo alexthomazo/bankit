@@ -2,6 +2,18 @@ $(document).ready(function() {
 	$('*[title]').tooltip({placement: 'bottom'});
 	
 	document.getElements('select.cat_select').addEvent('change', saveCategory);
+
+	Locale.use('fr-FR');
+	new Timeframe({
+		base_div: document.id('timeframe'),
+		//start_date: new Date(2011, 2, 24),
+		//end_date: new Date(2013, 1, 10),
+
+		onSelected: function(start_date, end_date) {
+			//console.log(start_date);
+			//console.log(end_date);
+		}
+	});
 });
 
 /**
