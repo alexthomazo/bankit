@@ -18,23 +18,22 @@
  */
 package org.alexlg.bankit.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.io.FileInputStream;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import org.alexlg.bankit.dao.AbstractDaoTest;
 import org.alexlg.bankit.dao.OperationDao;
 import org.alexlg.bankit.db.Operation;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.FileInputStream;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Test class for {@link SyncService}
@@ -69,9 +68,7 @@ public class SyncServiceTest extends AbstractDaoTest {
 		syncService.materializeCostsIntoOperation();
 		
 		//checking operation created
-		GregorianCalendar calPrevSyncDate = new GregorianCalendar();
-		calPrevSyncDate.setTime(previousSyncDate.toDate());
-		List<Operation> ops = operationDao.getFuture(calPrevSyncDate);
+		List<Operation> ops = operationDao.getFuture(previousSyncDate);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		assertEquals("ops size", 2, ops.size());
@@ -99,9 +96,7 @@ public class SyncServiceTest extends AbstractDaoTest {
 		syncService.materializeCostsIntoOperation();
 		
 		//checking operation created
-		GregorianCalendar calPrevSyncDate = new GregorianCalendar();
-		calPrevSyncDate.setTime(previousSyncDate.toDate());
-		List<Operation> ops = operationDao.getFuture(calPrevSyncDate);
+		List<Operation> ops = operationDao.getFuture(previousSyncDate);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		assertEquals("ops size", 4, ops.size());

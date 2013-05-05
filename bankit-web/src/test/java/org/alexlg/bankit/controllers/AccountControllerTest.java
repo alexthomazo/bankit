@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -58,11 +57,9 @@ public class AccountControllerTest extends AbstractDaoTest {
 	@Test
 	public void testBuildFutureOps() throws Exception {
 		LocalDate day = new LocalDate(2012, 8, 25);
-		Calendar calDay = Calendar.getInstance();
-		calDay.setTime(day.toDate());
-		
+
 		Set<MonthOps> futureOps = accountController.buildFutureOps(day,
-				operationDao.getFuture(calDay), 
+				operationDao.getFuture(day),
 				costDao.getList(), 
 				new BigDecimal("22.12"),
 				1);
@@ -115,8 +112,9 @@ public class AccountControllerTest extends AbstractDaoTest {
 	
 	@Test
 	public void testBuildCategories() throws Exception {
-		LocalDate day = new LocalDate(2012, 8, 25);
-		Map<Date, Map<Category, BigDecimal>> categories = accountController.buildCategories(day, 1);
+		LocalDate startDay = new LocalDate(2012, 7, 1);
+		LocalDate endDay = new LocalDate(2012, 8, 25);
+		Map<Date, Map<Category, BigDecimal>> categories = accountController.buildCategories(startDay, endDay);
 		
 		//we expected a map with the following structure
 		// - 2012-07 :

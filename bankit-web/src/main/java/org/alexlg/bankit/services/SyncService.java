@@ -159,10 +159,7 @@ public class SyncService {
 	 */
 	public void mergeOldPlannedOps() {
 		//retrieve all old planned ops
-		LocalDate endDate = getEndSyncDate();
-		Calendar endCal = new GregorianCalendar();
-		endCal.setTime(endDate.toDate());
-		List<Operation> oldOps = operationDao.getOldPlannedOps(endCal);
+		List<Operation> oldOps = operationDao.getOldPlannedOps(getEndSyncDate());
 		
 		for (Operation oldOp : oldOps) {
 			//checking if a matching operation exists

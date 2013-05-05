@@ -137,6 +137,7 @@ var Timeframe = new Class({
 
 					//save start date and set to clicked
 					this.start_date = el.retrieve('date');
+					this.end_date = this.start_date;
 					this.clicked = el;
 					el.addClass('selected').addClass('left').addClass('right');
 				}
@@ -203,8 +204,8 @@ var Timeframe = new Class({
 
 				if (el_time == start_time) {
 					el.addClass('left');
-
-				} else if (el_time == end_time) {
+				}
+				if (el_time == end_time) {
 					el.addClass('right');
 				}
 			}

@@ -27,6 +27,10 @@
 		<title>Liste des opérations</title>
 		<link href="<c:url value='/static/css/account.css'/>" type="text/css" rel="stylesheet" />
 		<link href="<c:url value='/static/css/timeframe.css'/>" type="text/css" rel="stylesheet" />
+		<script type="text/javascript">
+			var $start_day = new Date(${startDay.time}),
+				$end_day = new Date(${endDay.time});
+		</script>
 		<script src="<c:url value='/static/js/timeframe.class.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/operation-list.js'/>" type="text/javascript"></script>
 	</head>
@@ -138,7 +142,7 @@
 					
 						<%-- Past operation balance --%>
 						<tr class="success balance">
-							<td><fmt:formatDate pattern="dd/MM/yyyy" value="${curDate}" /></td>
+							<td><fmt:formatDate pattern="dd/MM/yyyy" value="${endDay}" /></td>
 							<td>solde courant</td>
 							<td></td>
 							<td>

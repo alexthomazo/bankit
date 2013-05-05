@@ -18,17 +18,17 @@
  */
 package org.alexlg.bankit.dao;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.List;
+import org.alexlg.bankit.db.Operation;
+import org.alexlg.bankit.db.Operation_;
+import org.joda.time.LocalDate;
+import org.springframework.stereotype.Controller;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import org.alexlg.bankit.db.Operation;
-import org.alexlg.bankit.db.Operation_;
-import org.springframework.stereotype.Controller;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Dao for account operations.
@@ -39,39 +39,29 @@ import org.springframework.stereotype.Controller;
 public class OperationDao extends AbstractDao<Operation, Integer> {
 	
 	/**
-	 * Get previous operation of the month from a specific day.
-	 * If the day is in the first 7th day of the month, 
-	 * get operation from the previous month too.
+	 * Get operations from startDay to endDay.
 	 * 
-	 * @param day Day from which retrieve operations.
+	 * @param startDay Day from which retrieve operations.
+	 * @param endDay Day to which retrieve operations
 	 * @return Operation list history
 	 * 		sorted by operation date and id.
 	 */
-	public List<Operation> getHistory(Calendar day) {
+	public List<Operation> getHistory(LocalDate startDay, LocalDate endDay) {
 		CriteriaBuilder b = getBuilder();
 		
 		//creating criteria
 		CriteriaQuery<Operation> q = b.createQuery(Operation.class);
 		Root<Operation> op = q.from(Operation.class);
 		q.select(op);
-		
-		//start date => 1st of the current or previous month
-		Calendar startDate = calculateFirstHistoDay(day);
-		
-		//end date, current day at 23:59:59
-		Calendar endDate = Calendar.getInstance();
-		endDate.clear();
-		endDate.set(day.get(Calendar.YEAR), day.get(Calendar.MONTH), 
-				day.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
-		
+
 		//adding restriction
 		// - every operation between the start and end date
 		// - every planned operation not sync before start date
 		q.where(
 			b.or(
-				b.between(op.get(Operation_.operationDate), startDate.getTime(), endDate.getTime()),
+				b.between(op.get(Operation_.operationDate), startDay.toDate(), endDay.toDate()),
 				b.and(
-					b.lessThan(op.get(Operation_.operationDate), startDate.getTime()),
+					b.lessThan(op.get(Operation_.operationDate), startDay.toDate()),
 					b.isNull(op.get(Operation_.amount))
 				)
 			)
@@ -87,13 +77,12 @@ public class OperationDao extends AbstractDao<Operation, Integer> {
 	}
 
 	/**
-	 * Get balance of the account previous of the history operations.
-	 * @param day Get the balance for operation before the month
-	 * 	of this specific day. If the day is in the 7th day of the month,
-	 * 	get the balance starting on the previous month.
+	 * Get balance of the account for previous operations.
+	 * @param day Get the balance for operation before this day
+	 *            to the opening of the account
 	 * @return Balance of the account
 	 */
-	public BigDecimal getBalanceHistory(Calendar day) {
+	public BigDecimal getBalanceHistory(LocalDate day) {
 		CriteriaBuilder b = getBuilder();
 		
 		//creating criteria
@@ -102,8 +91,7 @@ public class OperationDao extends AbstractDao<Operation, Integer> {
 		q.select(b.sum(op.get(Operation_.amount)));
 		
 		//adding restriction
-		Calendar startDate = calculateFirstHistoDay(day);
-		q.where(b.lessThan(op.get(Operation_.operationDate), startDate.getTime()));
+		q.where(b.lessThan(op.get(Operation_.operationDate), day.toDate()));
 		
 		return getEm().createQuery(q).getSingleResult();
 	}
@@ -113,22 +101,16 @@ public class OperationDao extends AbstractDao<Operation, Integer> {
 	 * @param day Day from which get future operation
 	 * @return Future operation ordered by operation date and id
 	 */
-	public List<Operation> getFuture(Calendar day) {
+	public List<Operation> getFuture(LocalDate day) {
 		CriteriaBuilder b = getBuilder();
 		
 		//creating criteria
 		CriteriaQuery<Operation> q = b.createQuery(Operation.class);
 		Root<Operation> op = q.from(Operation.class);
 		q.select(op);
-		
-		//start date
-		Calendar startDate = Calendar.getInstance();
-		startDate.clear();
-		startDate.set(day.get(Calendar.YEAR), day.get(Calendar.MONTH), day.get(Calendar.DAY_OF_MONTH),
-				0, 0, 0);
-		
+
 		//adding restriction
-		q.where(b.greaterThan(op.get(Operation_.operationDate), startDate.getTime()));
+		q.where(b.greaterThan(op.get(Operation_.operationDate), day.toDate()));
 		
 		//ordering
 		q.orderBy(
@@ -144,24 +126,18 @@ public class OperationDao extends AbstractDao<Operation, Integer> {
 	 * @param day Date from which retrieve the old operations.
 	 * @return List of old operations
 	 */
-	public List<Operation> getOldPlannedOps(Calendar day) {
+	public List<Operation> getOldPlannedOps(LocalDate day) {
 		CriteriaBuilder b = getBuilder();
 		
 		//creating criteria
 		CriteriaQuery<Operation> q = b.createQuery(Operation.class);
 		Root<Operation> op = q.from(Operation.class);
 		q.select(op);
-		
-		//start date
-		Calendar date = Calendar.getInstance();
-		date.clear();
-		date.set(day.get(Calendar.YEAR), day.get(Calendar.MONTH), day.get(Calendar.DAY_OF_MONTH),
-				0, 0, 0);
-		
+
 		//adding restriction
 		q.where(b.and(
 			b.isNull(op.get(Operation_.amount)),	
-			b.lessThanOrEqualTo(op.get(Operation_.operationDate), date.getTime())
+			b.lessThanOrEqualTo(op.get(Operation_.operationDate), day.toDate())
 		));
 		
 		return getEm().createQuery(q).getResultList();
@@ -214,20 +190,5 @@ public class OperationDao extends AbstractDao<Operation, Integer> {
 			return null;
 		}
 	}
-	
-	/**
-	 * Calculate the first day of the history. If the day is after the 7th day of the month,
-	 * the return date will be the 1st of the current month. Otherwise, the return date
-	 * will be the 1st of the previous month.
-	 * @param day Current day to which calculate the first history day.
-	 * @return First history day
-	 */
-	protected Calendar calculateFirstHistoDay(Calendar day) {
-		Calendar startDate = Calendar.getInstance();
-		startDate.clear();
-		startDate.set(day.get(Calendar.YEAR), day.get(Calendar.MONTH), 1, 0, 0, 0);
-		//if in 7th first day of month => 1st of last month
-		if (day.get(Calendar.DAY_OF_MONTH) < 7) startDate.add(Calendar.MONTH, -1);
-		return startDate;
-	}
+
 }

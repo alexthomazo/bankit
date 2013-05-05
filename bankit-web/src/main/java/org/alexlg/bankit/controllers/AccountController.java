@@ -132,16 +132,49 @@ public class AccountController {
 	 */
 	@RequestMapping("/list")
 	@Transactional(readOnly=true)
-	public String list(ModelMap model) {
-		Calendar calDay = Calendar.getInstance();
-		LocalDate day = new LocalDate(calDay);
+	public String list(@RequestParam(required = false) String startDate,
+					   @RequestParam(required = false) String endDate,
+					   ModelMap model) {
+
+		//start/end date of operations displayed
+		LocalDate startDay = null;
+		LocalDate endDay = null;
+		boolean buildFuture = false;
+
+		//parse dates if present
+		if (startDate != null) startDay = parseMonth(startDate);
+		if (endDate != null) endDay = parseMonth(endDate);
+
+		//select start/end day from parsing or default
+		if (startDay == null) startDay = calculateFirstHistoDay();
+		if (endDay == null) {
+			endDay = new LocalDate();
+			buildFuture = true;
+		} else {
+			//select the last day of the endMonth
+			endDay = endDay.dayOfMonth().withMaximumValue();
+
+			//force endDay to not go beyond today
+			LocalDate today = new LocalDate();
+			if (endDay.isAfter(today)) {
+				endDay = today;
+				buildFuture = true;
+			}
+		}
+
+		//switch start/end if not in correct order
+		if (startDay.isAfter(endDay)) {
+			LocalDate tmp = endDay;
+			endDay = startDay;
+			startDay = tmp;
+		}
 
 		//getting history operations
-		List<Operation> ops = operationDao.getHistory(calDay);
+		List<Operation> ops = operationDao.getHistory(startDay, endDay);
 		
 		//calculating balance for history
 		//current balance
-		BigDecimal current = operationDao.getBalanceHistory(calDay);
+		BigDecimal current = operationDao.getBalanceHistory(startDay);
 		//difference between planned and real
 		BigDecimal currentDiff = new BigDecimal("0");
 		//balance for planned op but not debited
@@ -177,24 +210,28 @@ public class AccountController {
 				op.setTotal(current.add(plannedWaiting));
 			}
 		}
-		
-		//getting future operations
-		Set<MonthOps> futureOps = buildFutureOps(day, 
-				operationDao.getFuture(calDay), costDao.getList(),
-				current.add(plannedWaiting), NB_FUTURE_MONTH);
-		
-		model.put("curDate", calDay.getTime());
+
+		if (buildFuture) {
+			//getting future operations
+			Set<MonthOps> futureOps = buildFutureOps(endDay,
+					operationDao.getFuture(endDay), costDao.getList(),
+					current.add(plannedWaiting), NB_FUTURE_MONTH);
+
+			model.put("futureOps", futureOps);
+		}
+
+		model.put("startDay", startDay.toDate());
+		model.put("endDay", endDay.toDate());
 		model.put("ops", ops);
 		model.put("current", current);
 		model.put("currentDiff", currentDiff);
 		model.put("periodBalance", current.subtract(initialBalance));
 		model.put("plannedWaiting", plannedWaiting);
 		model.put("currentWaiting", current.add(plannedWaiting));
-		model.put("futureOps", futureOps);
 		model.put("lastSyncDate", optionsService.getDate(SyncService.OP_SYNC_OPT));
 		model.put("categories", categoryDao.getList());
 		//get categories summary (for previous and current month)
-		model.put("categoriesSummary", buildCategories(day, 1));
+		model.put("categoriesSummary", buildCategories(startDay, endDay));
 		
 		return "account/list";
 	}
@@ -459,23 +496,68 @@ public class AccountController {
 	/**
 	 * Build categories summary for each month from startDate
 	 * to previous nbPrevMonth
-	 * @param startDate Base date to start the monthly summary from
-	 * @param nbPrevMonth Number of previous month to get in addition
-	 * 			of the month of startDate
+	 * @param startDate Start the summary for this month
+	 * @param endDate Stop the summary for this month
 	 * @return Map with the date of the month and a Map with Category
 	 * 			and amount for this category for this month
 	 */
-	protected Map<Date, Map<Category, BigDecimal>> buildCategories(LocalDate startDate, int nbPrevMonth) {
-		Map<Date, Map<Category, BigDecimal>> categories = new LinkedHashMap<Date, Map<Category,BigDecimal>>(nbPrevMonth + 1);
-		
-		for (int i = nbPrevMonth ; i >= 0 ; i--) {
-			LocalDate month = startDate.minusMonths(i);
-			Map<Category, BigDecimal> monthSummary = categoryDao.getMonthSummary(new YearMonth(month));
-			if (monthSummary.size() > 0) {
-				categories.put(month.toDate(), monthSummary);
-			}
+	protected Map<Date, Map<Category, BigDecimal>> buildCategories(LocalDate startDate, LocalDate endDate) {
+		Map<Date, Map<Category, BigDecimal>> categories = new LinkedHashMap<Date, Map<Category,BigDecimal>>();
+
+		YearMonth curMonth = null; //month we start to retrieve
+		YearMonth endMonth = null; //last month we have to retrieve
+		if (startDate.isBefore(endDate)) {
+			curMonth = new YearMonth(startDate.getYear(), startDate.getMonthOfYear());
+			endMonth = new YearMonth(endDate.getYear(), endDate.getMonthOfYear());
+		} else {
+			curMonth = new YearMonth(endDate.getYear(), endDate.getMonthOfYear());
+			endMonth = new YearMonth(startDate.getYear(), startDate.getMonthOfYear());
 		}
+
+		do {
+			Map<Category, BigDecimal> monthSummary = categoryDao.getMonthSummary(curMonth);
+			if (monthSummary.size() > 0) {
+				categories.put(curMonth.toLocalDate(1).toDate(), monthSummary);
+			}
+			curMonth = curMonth.plusMonths(1);
+		} while (curMonth.isBefore(endMonth) || curMonth.isEqual(endMonth));
 		
 		return categories;
+	}
+
+	/**
+	 * Parse month pattern yyyy-mm to a LocalDate at the 1st of the month
+	 * @param yearMonth Month pattern yyyy-mm
+	 * @return LocalDate at the first of the month or null if can't be parsed
+	 */
+	protected LocalDate parseMonth(String yearMonth) {
+		if (yearMonth.length() < 7) return null;
+
+		String year = yearMonth.substring(0, 4);
+		String month = yearMonth.substring(5, 7);
+
+		try {
+			int y = Integer.parseInt(year);
+			int m = Integer.parseInt(month);
+			return new LocalDate(y, m, 1);
+
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Calculate the first day of the history. If the current day is after the 7th day of the month,
+	 * the return date will be the 1st of the current month. Otherwise, the return date
+	 * will be the 1st of the previous month.
+	 * @return First history day
+	 */
+	protected LocalDate calculateFirstHistoDay() {
+		LocalDate date = new LocalDate();
+		if (date.getDayOfMonth() > 7) {
+			return date.withDayOfMonth(1);
+		} else {
+			return date.minusMonths(1).withDayOfMonth(1);
+		}
 	}
 }

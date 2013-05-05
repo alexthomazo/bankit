@@ -18,17 +18,16 @@
  */
 package org.alexlg.bankit.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.alexlg.bankit.db.Operation;
+import org.joda.time.LocalDate;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
-import org.alexlg.bankit.db.Operation;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.junit.Assert.*;
 
 /**
  * Operation Dao test class
@@ -43,10 +42,10 @@ public class OperationDaoTest extends AbstractDaoTest {
 	/** Testing retrieval operation the 25th of the month  */
 	@Test
 	public void testGetHistoryEndMonth() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 25);
+		LocalDate startDay = new LocalDate(2012, 8, 1);
+		LocalDate endDay = new LocalDate(2012, 8, 24);
 		
-		List<Operation> ops = operationDao.getHistory(day);
+		List<Operation> ops = operationDao.getHistory(startDay, endDay);
 		
 		assertEquals("nb operation", 9, ops.size());
 		//checking order => the old planned operation must be present
@@ -68,10 +67,10 @@ public class OperationDaoTest extends AbstractDaoTest {
 	 */
 	@Test
 	public void testGetHistoryStartMonth() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 5);
+		LocalDate startDay = new LocalDate(2012, 7, 1);
+		LocalDate endDay = new LocalDate(2012, 8, 5);
 		
-		List<Operation> ops = operationDao.getHistory(day);
+		List<Operation> ops = operationDao.getHistory(startDay, endDay);
 		
 		assertEquals("nb operation", 4, ops.size());
 		//checking order => the old planned operation must be present
@@ -85,8 +84,7 @@ public class OperationDaoTest extends AbstractDaoTest {
 	/** Test the sum of all previous history operations after the 7th of the month */
 	@Test
 	public void testGetBalanceHistoryEndMonth() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 25);
+		LocalDate day = new LocalDate(2012, 8, 1);
 		
 		BigDecimal balance = operationDao.getBalanceHistory(day);
 		assertEquals("histo balance", new BigDecimal("3747.32"), balance);
@@ -95,8 +93,7 @@ public class OperationDaoTest extends AbstractDaoTest {
 	/** Test the sum of all previous history operations before the 7th of the month */
 	@Test
 	public void testGetBalanceHistoryStartMonth() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 5);
+		LocalDate day = new LocalDate(2012, 7, 1);
 		
 		BigDecimal balance = operationDao.getBalanceHistory(day);
 		assertEquals("histo balance", new BigDecimal("2117.25"), balance);
@@ -105,8 +102,7 @@ public class OperationDaoTest extends AbstractDaoTest {
 	/** Testing retrieval future operation */
 	@Test
 	public void testGetFuture() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 25);
+		LocalDate day = new LocalDate(2012, 8, 26);
 		
 		List<Operation> ops = operationDao.getFuture(day);
 		
@@ -119,8 +115,7 @@ public class OperationDaoTest extends AbstractDaoTest {
 	/** Test retrieval of old ops */
 	@Test
 	public void testGetOldPlannedOps() throws Exception {
-		Calendar day = Calendar.getInstance();
-		day.set(2012, Calendar.AUGUST, 25);
+		LocalDate day = new LocalDate(2012, 8, 24);
 		
 		List<Operation> ops = operationDao.getOldPlannedOps(day);
 		

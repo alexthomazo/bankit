@@ -6,12 +6,12 @@ $(document).ready(function() {
 	Locale.use('fr-FR');
 	new Timeframe({
 		base_div: document.id('timeframe'),
-		//start_date: new Date(2011, 2, 24),
-		//end_date: new Date(2013, 1, 10),
+		start_date: $start_day,
+		end_date: $end_day,
 
 		onSelected: function(start_date, end_date) {
-			//console.log(start_date);
-			//console.log(end_date);
+			document.location.replace($ctx_path + "account/list?startDate=" + start_date.format("%Y-%m")
+				+ "&endDate=" + end_date.format("%Y-%m"));
 		}
 	});
 });
