@@ -253,7 +253,7 @@
 			<%-- /OPERATION TABLE --%>
 			
 			<%-- SUMMARY --%>
-			<div class="affix offset10">
+			<div class="offset10">
 				<h4>Balance</h4>
 				<table class="table table-striped table-hover table-condensed table-summary">
 					<tbody>
