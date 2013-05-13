@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Alexandre Thomazo
+ * Copyright (C) 2012-2013 Alexandre Thomazo
  *
  * This file is part of BankIt.
  *
