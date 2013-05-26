@@ -34,7 +34,13 @@
 		<link href="<c:url value='/static/css/style.css'/>" type="text/css" rel="stylesheet" />
 		<link href="<c:url value='/static/css/bootstrap-responsive.css'/>" type="text/css" rel="stylesheet" />
 
-		<script type="text/javascript">var $ctx_path="<c:url value='/'/>";</script>
+		<script type="text/javascript">
+			var $ctx_path="<c:url value='/'/>";
+			//deleting jsession id if provided (warn: in result the ajax requests will not working if cookies is disabled)
+			if ($ctx_path.charAt($ctx_path.length - 1) != "/") {
+				$ctx_path = $ctx_path.substring(0, $ctx_path.lastIndexOf('/') + 1);
+			}
+		</script>
 		<script src="<c:url value='/static/js/jquery-1.8.1.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/bootstrap.js'/>" type="text/javascript"></script>
 		<script src="<c:url value='/static/js/mootools.js'/>" type="text/javascript"></script>
