@@ -16,7 +16,7 @@ Here is the steps to configure a MySQL database :
 
 1. Create a database on your MySQL server then add a user with all rights on it
 
-2. Copy the [MySQL driver](http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.27/mysql-connector-java-5.1.27.jar) to the tomcat `lib/` directory
+2. Copy the [MySQL driver](http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.27/mysql-connector-java-5.1.27.jar) into the tomcat `lib/` directory
 
 3. Add the following resource into the Tomcat `conf/context.xml` file, between `<Context>` tags :
 
@@ -35,4 +35,4 @@ Here is the steps to configure a MySQL database :
 />
 ```
 
-4. Deploy the war as usual (put into webapps folder)
+Then you can deploy the war as usual (put into webapps folder) !
