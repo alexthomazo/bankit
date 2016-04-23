@@ -252,22 +252,24 @@ public class SyncService {
 	 */
 	public void syncOpList(List<Operation> operations) {
 		if (operations == null) return;
-		Date startSync = optionsService.getDate(OP_SYNC_OPT);
-		Date maxDate = null; //older operation date
+		Date start = optionsService.getDate(OP_SYNC_OPT);
+		LocalDate startSync = start == null ? null : LocalDate.fromDateFields(start);
+		LocalDate maxDate = null; //older operation date
 		
 		for (Operation op : operations) {
-			Date opDate = op.getOperationDate();
+			LocalDate opDate = LocalDate.fromDateFields(op.getOperationDate());
+
 			
-			if (startSync == null || opDate.after(startSync)) {
+			if (startSync == null || opDate.isAfter(startSync)) {
 				operationDao.insert(op);
 				
 				//checking if operation if after maxDate
-				if (maxDate == null || opDate.after(maxDate)) maxDate = opDate;
+				if (maxDate == null || opDate.isAfter(maxDate)) maxDate = opDate;
 			}
 		}
 		
 		//setting last execution
-		if (maxDate != null) optionsService.set(OP_SYNC_OPT, maxDate);
+		if (maxDate != null) optionsService.set(OP_SYNC_OPT, maxDate.toDate());
 	}
 	
 	/**
